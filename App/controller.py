@@ -71,7 +71,7 @@ def loadData(ctrlr):
 
 
 def load_data(catalog):
-    artistsfile = r"C:\Users\josed\Desktop\Reto2EDA\Reto2-G01\Data\spotify-artists-utf8-large.csv"
+    artistsfile = cf.data_dir +  "spotify-artists-utf8-large.csv"
     input_file = csv.DictReader(open(artistsfile, encoding='utf-8'))
     for _ in input_file:
         model.add_artist(catalog, _)
