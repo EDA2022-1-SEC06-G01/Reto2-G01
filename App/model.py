@@ -25,7 +25,6 @@
  """
 
 
-from genericpath import exists
 import config as cf
 from DISClib.ADT import list as lt
 from DISClib.ADT import map as mp
@@ -40,52 +39,12 @@ los mismos.
 
 # Construccion de modelos
 
-def newCatalog():
-    """ Inicializa el catálogo de libros
+# Funciones para agregar informacion al catalogo
 
-    Crea una lista vacia para guardar todos los libros
+# Funciones para creacion de datos
 
-    Se crean indices (Maps) por los siguientes criterios:
-    Autores
-    ID libros
-    Tags
-    Año de publicacion
+# Funciones de consulta
 
-    Retorna el catalogo inicializado.
-    """
-    catalog = {'datos': None}
-    catalog['datos'] = mp.newMap(70, maptype='CHAINING', loadfactor=4, comparefunction=compareFunction)
+# Funciones utilizadas para comparar elementos dentro de una lista
 
-    return catalog
-
-def compareFunction(id, tag):
-    tagentry = me.getKey(tag)
-    if (id == tagentry):
-        return 0
-    elif (id > tagentry):
-        return 1
-    else:
-        return 0
-
-
-def add_artist(catalog, artist):
-    artist["genres"] = list(artist["genres"].split(","))
-    for _ in range (0, len(artist["genres"])):
-        artist['genres'][_] = artist['genres'][_].replace('[', '').replace(']', '').replace("'", '').replace(' ', '')
-
-    for _ in artist["genres"]:
-        exists = mp.contains(catalog['model']["datos"], _)
-        if exists: 
-            entry = mp.get(catalog['model']["datos"], _)
-            x = me.getValue(entry)
-        else:
-            x = new_artist_genre(_)
-            mp.put(catalog['model']["datos"], _, x)
-        lt.addLast(x["artists"], artist)
-
-
-def new_artist_genre(artists_genre):
-    diccionario = {"genero": "", "artists": None}
-    diccionario["genero"] = artists_genre
-    diccionario["artists"] = lt.newList(datastructure='ARRAY_LIST')
-    return diccionario
+# Funciones de ordenamiento

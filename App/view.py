@@ -34,15 +34,6 @@ se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
 
-
-# Inicializacion de la comunicacion con el controlador
-def newController():
-    """
-    Se crea una instancia del controlador
-    """
-    control = controller.newController()
-    return control
-
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
@@ -58,13 +49,10 @@ while True:
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
-        control = newController()
-        x, y = controller.loadData(control)
-        print(f"Delta_time: {x}, Delta_memory: {y}")
-        print(control)
 
     elif int(inputs[0]) == 2:
         pass
 
     else:
         sys.exit(0)
+sys.exit(0)
