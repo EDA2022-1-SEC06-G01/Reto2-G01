@@ -31,20 +31,82 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
+import csv
+csv.field_size_limit(2147483647)
 
-"""
-Se define la estructura de un catálogo de videos. El catálogo tendrá dos listas, una para los videos, otra para las categorias de
-los mismos.
-"""
 
+# =======================
 # Construccion de modelos
+# =======================
 
+def newCatalog():
+    """
+    comment
+    """
+    catalog = {
+        'albums_id': None,
+        'artists_id': None,
+        'tracks_id': None}
+
+    """
+    Este indice crea un map cuya llave es el identificador del libro
+    """
+    catalog['albums_id'] = mp.newMap(10000,
+                                   maptype='CHAINING',
+                                   loadfactor=4,
+                                   comparefunction=None)
+
+    """
+    Este indice crea un map cuya llave es el año de publicacion
+    """
+    catalog['artists_id'] = mp.newMap(1000,
+                                 maptype='CHAINING',
+                                 loadfactor=4,
+                                 comparefunction=None)
+
+    """
+    Este indice crea un map cuya llave es el año de publicacion
+    """
+    catalog['tracks_id'] = mp.newMap(1000,
+                                 maptype='CHAINING',
+                                 loadfactor=4,
+                                 comparefunction=None)
+
+    return catalog
+
+
+
+
+# ==============================================
 # Funciones para agregar informacion al catalogo
+# ==============================================
 
+def add_albumsID_albumsNames(catalog, album):
+    mp.put(catalog['albums_id'], album['id'], album['name'])
+
+
+def add_artistsID_artistsNames(catalog, album):
+    mp.put(catalog['artists_id'], album['id'], album['name'])
+
+
+def add_tracksID_tracksNames(catalog, album):
+    mp.put(catalog['tracks_id'], album['id'], album['name'])
+
+
+
+
+# ================================
 # Funciones para creacion de datos
+# ================================
 
+# =====================
 # Funciones de consulta
+# =====================
 
+# ================================================================
 # Funciones utilizadas para comparar elementos dentro de una lista
+# ================================================================
 
+# =========================
 # Funciones de ordenamiento
+# =========================

@@ -25,7 +25,9 @@ import sys
 import controller
 from DISClib.ADT import list as lt
 assert cf
-
+import sys
+default_limit = 1000
+sys.setrecursionlimit(default_limit*10)
 
 """
 La vista se encarga de la interacción con el usuario
@@ -33,6 +35,32 @@ Presenta el menu de opciones y por cada seleccion
 se hace la solicitud al controlador para ejecutar la
 operación solicitada
 """
+
+# ====================================================
+# Inicializacion de la comunicacion con el controlador
+# ====================================================
+
+def newCatalog():
+    """
+    Se crea una instancia del controlador
+    """
+    control = controller.newCatalog()
+    return control
+
+
+
+
+# ===================================
+# Funciones para imprimir resultados
+# ===================================
+
+
+
+
+
+# ================================
+# Funcion para inicializar el menu
+# ================================
 
 def printMenu():
     print("Bienvenido")
@@ -44,11 +72,16 @@ catalog = None
 """
 Menu principal
 """
+
 while True:
     printMenu()
     inputs = input('Seleccione una opción para continuar\n')
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
+        catalog = newCatalog()
+        delta_time, delta_memory = controller.loadData(catalog)
+        print(catalog)
+        
 
     elif int(inputs[0]) == 2:
         pass
