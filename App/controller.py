@@ -25,6 +25,8 @@ import model
 import csv
 import tracemalloc
 import time
+from DISClib.ADT import list as lt
+
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -80,8 +82,8 @@ def CargaAlbums(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    #albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
-    albums = cf.data_dir + 'spotify-albums-utf8-small.csv'
+    albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
+    #albums = cf.data_dir + 'spotify-albums-utf8-small.csv'
     input_file = csv.DictReader(open(albums, encoding='utf-8'))
     for album in input_file:
         model.cargaAlbum(catalog['model'], album)
@@ -92,8 +94,8 @@ def CargaArtists(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    #artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
-    artists = cf.data_dir + 'spotify-artists-utf8-small.csv'
+    artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
+    #artists = cf.data_dir + 'spotify-artists-utf8-small.csv'
     input_file = csv.DictReader(open(artists, encoding='utf-8'))
     for artist in input_file:
         model.cargaArtists(catalog['model'], artist)
@@ -104,8 +106,8 @@ def CargaTracks(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    #tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
-    tracks = cf.data_dir + 'spotify-tracks-utf8-small.csv'
+    tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
+    #tracks = cf.data_dir + 'spotify-tracks-utf8-small.csv'
     input_file = csv.DictReader(open(tracks, encoding='utf-8'))
     for track in input_file:
         model.cargaTracks(catalog['model'], track)
@@ -122,6 +124,27 @@ def CargaTracks(catalog):
 # =======================================
 # Funciones de consulta sobre el catálogo
 # =======================================
+
+
+
+
+# ========================
+# Funciones requerimientos
+# ========================
+
+def requerimiento1(catalog, year):
+    mapa = catalog['model']['anio_albumID']
+    mapa_albumes = catalog['model']['albums_id']
+    lst_albumsID = model.get_mapa(mapa, year)['value']
+    albumsLST = model.newList()
+    
+    for album_id in lt.iterator(lst_albumsID):
+        album = model.get_mapa(mapa_albumes, album_id)
+        model.lst_addLast(albumsLST, album)
+
+    albumsLST = model.ordenamientoMerge(albumsLST, model.cmpAlbumsName)
+    return albumsLST, lt.size(albumsLST)
+
 
 
 

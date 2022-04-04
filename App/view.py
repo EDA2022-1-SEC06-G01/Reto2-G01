@@ -29,6 +29,8 @@ import sys
 default_limit = 1000
 sys.setrecursionlimit(default_limit*10)
 from DISClib.ADT import map as mp
+from DISClib.ADT import list as lt
+
 
 
 """
@@ -86,9 +88,12 @@ while True:
         print(mp.size(catalog['model']['artists_id']))
         print(mp.size(catalog['model']['tracks_id']))
         
-
     elif int(inputs[0]) == 2:
-        pass
+        year = int(input("Introduzca el anio que desea consultar: "))
+        albumsLST, lst_size = controller.requerimiento1(catalog, year)
+        print(lt.firstElement(albumsLST))
+        print(lt.lastElement(albumsLST))
+        print(lst_size)
 
     else:
         sys.exit(0)
