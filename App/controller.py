@@ -83,7 +83,7 @@ def load_albumsID_albumsNames(catalog):
     albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
     input_file = csv.DictReader(open(albums, encoding='utf-8'))
     for album in input_file:
-        model.add_albumsID_albumsNames(catalog['model'], album)
+        model.cargaAlbum(catalog['model'], album)
 
 
 def load_artistsID_artistsNames(catalog):
@@ -94,7 +94,7 @@ def load_artistsID_artistsNames(catalog):
     artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
     input_file = csv.DictReader(open(artists, encoding='utf-8'))
     for artist in input_file:
-        model.add_artistsID_artistsNames(catalog['model'], artist)
+        model.cargaArtists(catalog['model'], artist)
 
 
 def load_tracksID_tracksNames(catalog):
@@ -105,7 +105,7 @@ def load_tracksID_tracksNames(catalog):
     tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
     input_file = csv.DictReader(open(tracks, encoding='utf-8'))
     for track in input_file:
-        model.add_tracksID_tracksNames(catalog['model'], track)
+        model.cargaTracks(catalog['model'], track)
 
 
 

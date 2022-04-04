@@ -31,6 +31,7 @@ from DISClib.ADT import map as mp
 from DISClib.DataStructures import mapentry as me
 from DISClib.Algorithms.Sorting import shellsort as sa
 assert cf
+import datetime
 import csv
 csv.field_size_limit(2147483647)
 
@@ -81,16 +82,44 @@ def newCatalog():
 # Funciones para agregar informacion al catalogo
 # ==============================================
 
+# Carga general albums
+def cargaAlbum(catalog, album):
+    album['total_tracks'] = float(album['total_tracks'])
+    album['available_markets'] = (album['available_markets'].replace("[", "").replace("]", "").replace("'", "").replace('"', "")).split(",")
+    album['release_date'] = datetime.datetime.strptime(album['release_date'], "%Y-%m-%d") if (len(album['release_date']) == 10) else (datetime.datetime.strptime(album['release_date'][:4] + "19" + album['release_date'][-2:], "%b-%Y") if (len(album['release_date']) == 6) else (datetime.datetime.strptime(album['release_date'], '%Y')))
+    add_albumsID_albumsNames(catalog, album)
+
+
+# Carga general artists
+def cargaArtists(catalog, artist):
+    artist['artist_popularity'] = float(artist['artist_popularity'])
+    artist['genres'] = (artist['genres'].replace("[", "").replace("]", "").replace("'", "")).split(",")
+    artist['followers'] = float(artist['followers'])
+    add_artistsID_artistsNames(catalog, artist)
+
+
+# Carga general tracks
+def cargaTracks(catalog, track):
+    track['artists_id'] = (track['artists_id'].replace("[", "").replace("]", "").replace("'", "").replace(" ", "")).split(",")
+    track['popularity'] = float(track['popularity'])
+    track['liveness'] = float(track['liveness'])
+    track['tempo'] = float(track['tempo'])
+    track['duration_ms'] = float(track['duration_ms'])
+    track['available_markets'] = (track['available_markets'].replace("[", "").replace("]", "").replace("'", "").replace('"', "")).split(",")
+    track['disc_number'] = float(track['disc_number'])
+    add_tracksID_tracksNames(catalog, track)
+
+
 def add_albumsID_albumsNames(catalog, album):
-    mp.put(catalog['albums_id'], album['id'], album['name'])
+    mp.put(catalog['albums_id'], album['id'], album)
 
 
-def add_artistsID_artistsNames(catalog, album):
-    mp.put(catalog['artists_id'], album['id'], album['name'])
+def add_artistsID_artistsNames(catalog, artist):
+    mp.put(catalog['artists_id'], artist['id'], artist)
 
 
-def add_tracksID_tracksNames(catalog, album):
-    mp.put(catalog['tracks_id'], album['id'], album['name'])
+def add_tracksID_tracksNames(catalog, track):
+    mp.put(catalog['tracks_id'], track['id'], track)
 
 
 
