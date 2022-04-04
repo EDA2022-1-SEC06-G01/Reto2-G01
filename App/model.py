@@ -49,7 +49,8 @@ def newCatalog():
         'albums_id': None,
         'artists_id': None,
         'tracks_id': None,
-        'anio_albumID': None}
+        'anio_albumID': None,
+        'artistPopularity_artistID': None}
 
     """
     Este indice crea un map cuya llave es el identificador del libro
@@ -80,6 +81,11 @@ def newCatalog():
                                  maptype='CHAINING',
                                  loadfactor=4,
                                  comparefunction=None)
+    
+    catalog['artistPopularity_artistID'] = mp.newMap(1000,
+                                 maptype='CHAINING',
+                                 loadfactor=4,
+                                 comparefunction=None)
 
     return catalog
 
@@ -106,6 +112,7 @@ def cargaArtists(catalog, artist):
     artist['genres'] = (artist['genres'].replace("[", "").replace("]", "").replace("'", "")).split(",")
     artist['followers'] = float(artist['followers'])
     add_artistsID_artistsNames(catalog, artist)
+    carga_requerimiento2(catalog, artist)
 
 
 # Carga general tracks
@@ -142,10 +149,26 @@ def carga_requerimiento1(catalog, album):
         lst = me.getValue(entry)
 
     else:
-        lst = newYear(year)
+        lst = lstRaw()
         mp.put(anio_albumID, year, lst)
 
     lt.addLast(lst, album['id'])
+
+
+def carga_requerimiento2(catalog, artist):
+    artistPopularity_artistID = catalog['artistPopularity_artistID']
+    popularity = artist['artist_popularity']
+    existPopularity = mp.contains(artistPopularity_artistID, popularity)
+
+    if existPopularity:
+        entry = mp.get(artistPopularity_artistID, popularity)
+        lst = me.getValue(entry)
+
+    else:
+        lst = lstRaw()
+        mp.put(artistPopularity_artistID, popularity, lst)
+
+    lt.addLast(lst, artist['id'])
 
 
 
@@ -155,9 +178,9 @@ def carga_requerimiento1(catalog, album):
 # Funciones para creacion de datos
 # ================================
 
-def newYear(year):
-    year = lt.newList('SINGLE_LINKED')
-    return year
+def lstRaw():
+    lst = lt.newList(datastructure='ARRAY_LIST')
+    return lst
 
 
 # =====================
