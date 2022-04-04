@@ -69,7 +69,8 @@ def newCatalog():
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- req 1")
+    print("3- req 2")
 
 catalog = None
 
@@ -91,6 +92,13 @@ while True:
     elif int(inputs[0]) == 2:
         year = int(input("Introduzca el anio que desea consultar: "))
         albumsLST, lst_size = controller.requerimiento1(catalog, year)
+        print(lt.firstElement(albumsLST))
+        print(lt.lastElement(albumsLST))
+        print(lst_size)
+
+    elif int(inputs[0]) == 3:
+        popularity = int(input("Introduzca la popularidad que desea consultar: "))
+        albumsLST, lst_size = controller.requerimiento2(catalog, popularity)
         print(lt.firstElement(albumsLST))
         print(lt.lastElement(albumsLST))
         print(lst_size)

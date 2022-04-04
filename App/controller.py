@@ -146,6 +146,17 @@ def requerimiento1(catalog, year):
     return albumsLST, lt.size(albumsLST)
 
 
+def requerimiento2(catalog, artist):
+    mapa = catalog['model']['artistPopularity_artistID']
+    mapa_artists = catalog['model']['artists_id']
+    lst_artistID = model.get_mapa(mapa, artist)['value']
+    artistLST = model.newList()
+    for artist_id in lt.iterator(lst_artistID):
+        artist = model.get_mapa(mapa_artists, artist_id)
+        model.lst_addLast(artistLST, artist)
+
+    artistLST = model.ordenamientoMerge(artistLST, model.cmpArtistPopularity)
+    return artistLST, lt.size(artistLST)
 
 
 
