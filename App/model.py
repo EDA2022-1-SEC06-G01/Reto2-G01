@@ -214,7 +214,13 @@ def get_mapa(mapa, llave):
 # ================================================================
 
 def cmpAlbumsName(album1, album2):
-    return album1['value']["name"] < album2['value']["name"]
+    return album1['value']["name"] > album2['value']["name"]
+
+def cmpArtistPopularity(artist1, artist2):
+    if artist1['value']["followers"] == artist2['value']["followers"]:
+        return artist1['value']["name"] > artist2['value']["name"]
+    else:
+        return artist1['value']["followers"] > artist2['value']["followers"]
 
 # =========================
 # Funciones de ordenamiento
