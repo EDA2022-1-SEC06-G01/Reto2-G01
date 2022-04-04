@@ -50,7 +50,8 @@ def newCatalog():
         'artists_id': None,
         'tracks_id': None,
         'anio_albumID': None,
-        'artistPopularity_artistID': None}
+        'artistPopularity_artistID': None,
+        'nomArtist_artistID': None}
 
     """
     Este indice crea un map cuya llave es el identificador del libro
@@ -87,6 +88,12 @@ def newCatalog():
                                  loadfactor=4,
                                  comparefunction=None)
 
+
+    catalog['nomArtist_artistID'] = mp.newMap(1000,
+                                 maptype='CHAINING',
+                                 loadfactor=4,
+                                 comparefunction=None)
+
     return catalog
 
 
@@ -113,6 +120,7 @@ def cargaArtists(catalog, artist):
     artist['followers'] = float(artist['followers'])
     add_artistsID_artistsNames(catalog, artist)
     carga_requerimiento2(catalog, artist)
+    carga_requerimiento4(catalog, artist)
 
 
 # Carga general tracks
@@ -170,6 +178,11 @@ def carga_requerimiento2(catalog, artist):
 
     lt.addLast(lst, artist['id'])
 
+
+def carga_requerimiento4(catalog, artist):
+    nomArtist_artistID = catalog['nomArtist_artistID']
+    mp.put(nomArtist_artistID, artist['name'], artist['id'])
+    # revisar que puede que el nombre de los artistas se repita
 
 
 
