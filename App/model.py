@@ -35,7 +35,11 @@ assert cf
 import datetime
 import csv
 csv.field_size_limit(2147483647)
-
+from DISClib.Algorithms.Sorting import insertionsort
+from DISClib.Algorithms.Sorting import selectionsort
+from DISClib.Algorithms.Sorting import shellsort
+from DISClib.Algorithms.Sorting import mergesort
+from DISClib.Algorithms.Sorting import quicksort
 
 # =======================
 # Construccion de modelos
@@ -149,7 +153,7 @@ def carga_requerimiento1(catalog, album):
         lst = me.getValue(entry)
 
     else:
-        lst = lstRaw()
+        lst = newList()
         mp.put(anio_albumID, year, lst)
 
     lt.addLast(lst, album['id'])
@@ -165,7 +169,7 @@ def carga_requerimiento2(catalog, artist):
         lst = me.getValue(entry)
 
     else:
-        lst = lstRaw()
+        lst = newList()
         mp.put(artistPopularity_artistID, popularity, lst)
 
     lt.addLast(lst, artist['id'])
@@ -178,19 +182,55 @@ def carga_requerimiento2(catalog, artist):
 # Funciones para creacion de datos
 # ================================
 
-def lstRaw():
-    lst = lt.newList(datastructure='ARRAY_LIST')
-    return lst
-
+def newList():
+    return lt.newList(datastructure='ARRAY_LIST')
 
 # =====================
 # Funciones de consulta
 # =====================
 
+def map_size(mapa):
+    return mp.size(mapa)
+
+
+def lst_size(lst):
+    return lt.size(lst)
+
+def lst_addLast(lst, value):
+    return lt.addLast(lst, value)
+
+def lst_iterator(lst):
+    lt.iterator(lst)
+
+
+def get_mapa(mapa, llave):
+    return mp.get(mapa, llave)
+
+
+
+
 # ================================================================
 # Funciones utilizadas para comparar elementos dentro de una lista
 # ================================================================
 
+def cmpAlbumsName(album1, album2):
+    return album1['value']["name"] < album2['value']["name"]
+
 # =========================
 # Funciones de ordenamiento
 # =========================
+
+def ordenamientoSelection(lst, cmpfunction):
+    return selectionsort.sort(lst, cmpfunction)
+    
+def ordenamientoInsetion(lst, cmpfunction):
+    return insertionsort.sort(lst, cmpfunction)
+
+def ordenamientoShell(lst, cmpfunction):
+    return shellsort.sort(lst, cmpfunction)
+
+def ordenamientoMerge(lst, cmpfunction):
+    return mergesort.sort(lst, cmpfunction)
+
+def ordenamientoQuick(lst, cmpfunction):
+    return quicksort.sort(lst, cmpfunction)
