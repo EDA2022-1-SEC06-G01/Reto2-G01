@@ -29,6 +29,8 @@ import sys
 default_limit = 1000
 sys.setrecursionlimit(default_limit*10)
 from DISClib.ADT import map as mp
+from DISClib.ADT import list as lt
+
 
 
 """
@@ -67,7 +69,8 @@ def newCatalog():
 def printMenu():
     print("Bienvenido")
     print("1- Cargar información en el catálogo")
-    print("2- ")
+    print("2- req 1")
+    print("3- req 2")
 
 catalog = None
 
@@ -86,9 +89,19 @@ while True:
         print(mp.size(catalog['model']['artists_id']))
         print(mp.size(catalog['model']['tracks_id']))
         
-
     elif int(inputs[0]) == 2:
-        pass
+        year = int(input("Introduzca el anio que desea consultar: "))
+        albumsLST, lst_size = controller.requerimiento1(catalog, year)
+        print(lt.firstElement(albumsLST))
+        print(lt.lastElement(albumsLST))
+        print(lst_size)
+
+    elif int(inputs[0]) == 3:
+        popularity = int(input("Introduzca la popularidad que desea consultar: "))
+        albumsLST, lst_size = controller.requerimiento2(catalog, popularity)
+        print(lt.firstElement(albumsLST))
+        print(lt.lastElement(albumsLST))
+        print(lst_size)
 
     else:
         sys.exit(0)
