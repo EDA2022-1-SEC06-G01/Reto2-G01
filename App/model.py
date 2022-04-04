@@ -55,7 +55,7 @@ def newCatalog():
         'tracks_id': None,
         'anio_albumID': None,
         'artistPopularity_artistID': None,
-        'nomArtist_artistID': None}
+        'paisTrack_idTrack': None}
 
     """
     Este indice crea un map cuya llave es el identificador del libro
@@ -93,7 +93,7 @@ def newCatalog():
                                  comparefunction=None)
 
 
-    catalog['nomArtist_artistID'] = mp.newMap(1000,
+    catalog['paisTrack_idTrack'] = mp.newMap(1000,
                                  maptype='CHAINING',
                                  loadfactor=4,
                                  comparefunction=None)
@@ -123,8 +123,7 @@ def cargaArtists(catalog, artist):
     artist['genres'] = (artist['genres'].replace("[", "").replace("]", "").replace("'", "")).split(",")
     artist['followers'] = float(artist['followers'])
     add_artistsID_artistsNames(catalog, artist)
-    carga_requerimiento2(catalog, artist)
-    carga_requerimiento4(catalog, artist)
+    carga_requerimiento2(catalog, artist) 
 
 
 # Carga general tracks
@@ -137,6 +136,7 @@ def cargaTracks(catalog, track):
     track['available_markets'] = (track['available_markets'].replace("[", "").replace("]", "").replace("'", "").replace('"', "")).split(",")
     track['disc_number'] = float(track['disc_number'])
     add_tracksID_tracksNames(catalog, track)
+    carga_requerimiento4(catalog, track)
 
 
 def add_albumsID_albumsNames(catalog, album):
@@ -183,10 +183,20 @@ def carga_requerimiento2(catalog, artist):
     lt.addLast(lst, artist['id'])
 
 
-def carga_requerimiento4(catalog, artist):
-    nomArtist_artistID = catalog['nomArtist_artistID']
-    mp.put(nomArtist_artistID, artist['name'], artist['id'])
-    # revisar que puede que el nombre de los artistas se repita
+def carga_requerimiento4(catalog, track):
+    mapa = catalog["paisTrack_idTrack"]
+    paises = track["available_markets"]
+    for pais in paises:
+        existe = mp.contains(mapa, pais)
+        if existe:
+            entry = mp.get(mapa, pais)
+            lst = me.getValue(entry)
+        
+        else:
+            lst = newList()
+            mp.put(mapa, pais, lst)
+    
+    lt.addLast(lst, track["id"])
 
 
 
