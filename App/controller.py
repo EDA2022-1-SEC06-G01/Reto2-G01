@@ -60,9 +60,9 @@ def loadData(catalog):
     start_time = getTime()
     start_memory = getMemory()
 
-    load_albumsID_albumsNames(catalog)
-    load_artistsID_artistsNames(catalog)
-    load_tracksID_tracksNames(catalog)
+    CargaAlbums(catalog)
+    CargaArtists(catalog)
+    CargaTracks(catalog)
 
     stop_memory = getMemory()
     stop_time = getTime()
@@ -75,38 +75,40 @@ def loadData(catalog):
     return delta_time, delta_memory
 
 
-def load_albumsID_albumsNames(catalog):
+def CargaAlbums(catalog):
     """
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
+    #albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
+    albums = cf.data_dir + 'spotify-albums-utf8-small.csv'
     input_file = csv.DictReader(open(albums, encoding='utf-8'))
     for album in input_file:
         model.cargaAlbum(catalog['model'], album)
 
 
-def load_artistsID_artistsNames(catalog):
+def CargaArtists(catalog):
     """
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
+    #artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
+    artists = cf.data_dir + 'spotify-artists-utf8-small.csv'
     input_file = csv.DictReader(open(artists, encoding='utf-8'))
     for artist in input_file:
         model.cargaArtists(catalog['model'], artist)
 
 
-def load_tracksID_tracksNames(catalog):
+def CargaTracks(catalog):
     """
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
+    #tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
+    tracks = cf.data_dir + 'spotify-tracks-utf8-small.csv'
     input_file = csv.DictReader(open(tracks, encoding='utf-8'))
     for track in input_file:
         model.cargaTracks(catalog['model'], track)
-
 
 
 

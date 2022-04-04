@@ -28,6 +28,8 @@ assert cf
 import sys
 default_limit = 1000
 sys.setrecursionlimit(default_limit*10)
+from DISClib.ADT import map as mp
+
 
 """
 La vista se encarga de la interacción con el usuario
@@ -80,7 +82,9 @@ while True:
         print("Cargando información de los archivos ....")
         catalog = newCatalog()
         delta_time, delta_memory = controller.loadData(catalog)
-        print(catalog)
+        print(mp.size(catalog['model']['albums_id']))
+        print(mp.size(catalog['model']['artists_id']))
+        print(mp.size(catalog['model']['tracks_id']))
         
 
     elif int(inputs[0]) == 2:
