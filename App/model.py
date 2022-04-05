@@ -56,7 +56,8 @@ def newCatalog():
         'artistsName_id': None,
         'anio_albumID': None,
         'artistPopularity_artistID': None,
-        'canciones_por_artistas': None}
+        'canciones_por_artistas': None,
+        'albumes_por_artistas': None}
 
     """
     Este indice crea un map cuya llave es el identificador del libro
@@ -104,6 +105,11 @@ def newCatalog():
                                  maptype='CHAINING',
                                  loadfactor=4,
                                  comparefunction=None)
+    
+    catalog['albumes_por_artistas'] = mp.newMap(1000,
+                                 maptype='CHAINING',
+                                 loadfactor=4,
+                                 comparefunction=None)
 
 
     return catalog
@@ -122,6 +128,7 @@ def cargaAlbum(catalog, album):
     album['release_date'] = datetime.datetime.strptime(album['release_date'], "%Y-%m-%d") if (len(album['release_date']) == 10) else (datetime.datetime.strptime(album['release_date'][:4] + "19" + album['release_date'][-2:], "%b-%Y") if (len(album['release_date']) == 6) else (datetime.datetime.strptime(album['release_date'], '%Y')))
     add_albumsID_albumsNames(catalog, album)
     carga_requerimiento1(catalog, album)
+    albumes_por_artistas(catalog, album)
     
 
 
@@ -209,7 +216,7 @@ def carga_requerimiento3(catalog, track):
         mp.put(trackPopularity_trackID, popularity, lst)
     lt.addLast(lst, track['id'])
 
-
+# funciones requerimiento 4
 def canciones_por_artistas(catalog, track):
     canciones_por_artistas = catalog['canciones_por_artistas']
     for artista in track['artists_id']:
@@ -256,6 +263,7 @@ def ArtistName_to_artistValue(catalog, artistName):
 
 def trackID_to_trackValue(catalog, trackID):
     return me.getValue(mp.get(catalog['model']['tracks_id'], trackID))
+
 
 # ================================
 # Funciones para creacion de datos
