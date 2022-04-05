@@ -172,6 +172,29 @@ def add_artistsName_id(catalog, artist):
     mp.put(catalog['artistsName_id'], artist['name'], artist["id"])
 
 
+
+
+
+
+
+# ========================
+# Funciones requerimientos
+# ========================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def carga_requerimiento1(catalog, album):
     anio_albumID = catalog['anio_albumID']
     year = album['release_date'].year
@@ -182,11 +205,27 @@ def carga_requerimiento1(catalog, album):
         lst = me.getValue(entry)
 
     else:
-        lst = newList()
+        lst = lt.newList(datastructure='ARRAY_LIST')
         mp.put(anio_albumID, year, lst)
 
     lt.addLast(lst, album['id'])
 
+def requerimiento1(catalog, year):
+    mapa = catalog['model']['anio_albumID']
+    mapa_albumes = catalog['model']['albums_id']
+    lst_albumsID = me.getValue(mp.get(mapa, year))
+    albumsLST = lt.newList(datastructure='ARRAY_LIST')
+    
+    for album_id in lt.iterator(lst_albumsID):
+        album = mp.get(mapa_albumes, album_id)
+        lt.addLast(albumsLST, album)
+
+    albumsLST = shellsort.sort(albumsLST, cmpAlbumsName)
+    cantidad_albumes = lt.size(albumsLST)
+    return albumsLST, cantidad_albumes
+
+
+#requerimiento 2
 
 def carga_requerimiento2(catalog, artist):
     artistPopularity_artistID = catalog['artistPopularity_artistID']
@@ -198,10 +237,24 @@ def carga_requerimiento2(catalog, artist):
         lst = me.getValue(entry)
 
     else:
-        lst = newList()
+        lst = lt.newList(datastructure='ARRAY_LIST')
         mp.put(artistPopularity_artistID, popularity, lst)
 
     lt.addLast(lst, artist['id'])
+
+def requerimiento2(catalog, artist):
+    mapa = catalog['model']['artistPopularity_artistID']
+    mapa_artists = catalog['model']['artists_id']
+    lst_artistID = me.getValue(mp.get(mapa, artist))
+    artistLST = lt.newList(datastructure='ARRAY_LIST')
+    for artist_id in lt.iterator(lst_artistID):
+        artist = me.getValue(mp.get(mapa_artists, artist_id))
+        lt.addLast(artistLST, artist)
+    artistLST = shellsort.sort(artistLST, cmpArtistPopularity)
+    return artistLST, lt.size(artistLST)
+
+
+#requerimiento 3
 
 def carga_requerimiento3(catalog, track):
     trackPopularity_trackID = catalog['trackPopularity_trackID']
@@ -212,9 +265,21 @@ def carga_requerimiento3(catalog, track):
         entry = mp.get(trackPopularity_trackID, popularity)
         lst = me.getValue(entry)
     else:
-        lst = newList()
+        lst = lt.newList(datastructure='ARRAY_LIST')
         mp.put(trackPopularity_trackID, popularity, lst)
     lt.addLast(lst, track['id'])
+
+def requerimiento3(catalog, track):
+    mapa = catalog['model']['trackPopularity_trackID']
+    mapa_canciones = catalog['model']['tracks_id']
+    lst_trackID = mp.get(mapa, track)['value']
+    trackLST = lt.newList(datastructure='ARRAY_LIST')
+    for track_id in lt.iterator(lst_trackID):
+        track = mp.get(mapa_canciones, track_id)
+        lt.addLast(trackLST, track)
+    trackLST = shellsort.sort(trackLST, cmpTrackByDuration)
+    numero_canciones = lt.size(trackLST)
+    return trackLST, numero_canciones
 
 # funciones requerimiento 4
 def canciones_por_artistas(catalog, track):
@@ -225,16 +290,17 @@ def canciones_por_artistas(catalog, track):
             entry = mp.get(canciones_por_artistas, artista)
             lst = me.getValue(entry)
         else:
-            lst = newList()
+            lst = lt.newList(datastructure='ARRAY_LIST')
             mp.put(canciones_por_artistas, artista, lst)
         lt.addLast(lst, track['id'])
+
 
 def cancionesArtistas_filtradasMercado(catalog, artista, mercado):
     canciones_por_artistas = catalog['model']['canciones_por_artistas']
     artistID = ArtistName_to_artistValue(catalog, artista)['id']
     tracks_id = catalog['model']['tracks_id']
     cancionesArtista = me.getValue(mp.get(canciones_por_artistas, artistID))
-    lst = newList()
+    lst = lt.newList(datastructure='ARRAY_LIST')
     for cancion_id in lt.iterator(cancionesArtista):
         cancion = me.getValue(mp.get(tracks_id, cancion_id))
         mercados = cancion['available_markets']
@@ -244,11 +310,48 @@ def cancionesArtistas_filtradasMercado(catalog, artista, mercado):
 
 def requerimiento4(catalog, artista, mercado):
     canciones = cancionesArtistas_filtradasMercado(catalog, artista, mercado)
-    canciones = ordenamientoShell(canciones, cmpRequerimiento4)
+    canciones = shellsort.sort(canciones, cmpRequerimiento4)
     return canciones
     
 
+# Funciones requerimiento 5
 
+def albumes_por_artistas(catalogo, album):
+    albumes_por_artistas = catalogo['albumes_por_artistas']
+    artista = album['artist_id']
+    existe = mp.contains(albumes_por_artistas, artista)
+    if existe == True:
+        entry = mp.get(albumes_por_artistas, artista)
+        lst = me.getValue(entry)
+    else:
+        lst = lt.newList(datastructure='ARRAY_LIST')
+        mp.put(albumes_por_artistas, artista, lst)
+    lt.addLast(lst, album)
+
+def listaAlbums_cancionesPopulares(catalogo, lista_albumes):
+    lst = lt.newList(datastructure='ARRAY_LIST')
+    for album in lt.iterator(lista_albumes):
+        track = album["track_id"]
+        lt.addLast(lst, trackID_to_trackValue(catalogo, track))
+    lst = shellsort.sort(lst, cmpCanciones)
+    return lst
+
+def requerimiento5(catalogo, artista):
+    albumes_por_artistas = catalogo['model']['albumes_por_artistas']
+    artistID = ArtistName_to_artistValue(catalogo, artista)['id']
+    albums_artista = me.getValue(mp.get(albumes_por_artistas, artistID))
+    album_sencillo = 0
+    album_recopilacion = 0
+    album_album = 0
+    for album in lt.iterator(albums_artista):
+        if album["album_type"] == "single":
+            album_sencillo += 1
+        elif album["album_type"] == "compilation":
+            album_recopilacion += 1
+        else:
+            album_album += 1
+    listaCancionesPopulares = listaAlbums_cancionesPopulares(catalogo, albums_artista)
+    return albums_artista, listaCancionesPopulares, album_sencillo, album_recopilacion, album_album
 
     
     
@@ -262,40 +365,22 @@ def ArtistName_to_artistValue(catalog, artistName):
     return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
 
 def trackID_to_trackValue(catalog, trackID):
-    return me.getValue(mp.get(catalog['model']['tracks_id'], trackID))
+    try:
+        return me.getValue(mp.get(catalog['model']['tracks_id'], trackID))
+    except:
+        print(f"No se encontro valor {trackID}")
 
 
 # ================================
 # Funciones para creacion de datos
 # ================================
 
-def newList():
-    return lt.newList(datastructure='ARRAY_LIST')
+
 
 # =====================
 # Funciones de consulta
 # =====================
 
-def map_size(mapa):
-    return mp.size(mapa)
-
-
-def lst_size(lst):
-    return lt.size(lst)
-
-
-def lst_addLast(lst, value):
-    return lt.addLast(lst, value)
-
-
-def lst_iterator(lst):
-    lt.iterator(lst)
-
-
-def get_mapa(mapa, llave):
-    return mp.get(mapa, llave)
-
-# Buen codigo
 def artistID_to_artistValue(catalog, artistID):
     return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
 
@@ -304,18 +389,21 @@ def ArtistName_to_artistValue(catalog, artistName):
     artistID = me.getValue(mp.get(mapa, artistName))
     return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
 
+
+
+
 # ================================================================
 # Funciones utilizadas para comparar elementos dentro de una lista
 # ================================================================
 
 def cmpAlbumsName(album1, album2):
-    return album1['value']["name"] > album2['value']["name"]
+    return album1["name"] > album2["name"]
 
 def cmpArtistPopularity(artist1, artist2):
-    if artist1['value']["followers"] == artist2['value']["followers"]:
-        return artist1['value']["name"] > artist2['value']["name"]
+    if artist1["followers"] == artist2["followers"]:
+        return artist1["name"] > artist2["name"]
     else:
-        return artist1['value']["followers"] > artist2['value']["followers"]
+        return artist1["followers"] > artist2["followers"]
 
 def cmpTrackByDuration(track1, track2):
     if track1['value']['duration_ms'] == track2['value']['duration_ms']:
@@ -324,7 +412,19 @@ def cmpTrackByDuration(track1, track2):
         return track1['value']['duration_ms'] > track2['value']['duration_ms']
 
 def cmpRequerimiento4(track1, track2):
+    
     if track1['popularity'] != track2['popularity']:
+        return track1['popularity'] > track2['popularity']
+    elif track1['duration_ms'] != track2['duration_ms']:
+        return track1['duration_ms'] > track2['duration_ms']
+    else:
+        return track1['name'] > track2['name']
+
+def cmpCanciones(track1, track2):
+    #revisar los nones que aparecen
+    if track1 == None or track2 == None:
+        return
+    elif track1['popularity'] != track2['popularity']:
         return track1['popularity'] > track2['popularity']
     elif track1['duration_ms'] != track2['duration_ms']:
         return track1['duration_ms'] > track2['duration_ms']

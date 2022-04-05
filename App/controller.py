@@ -133,42 +133,19 @@ def CargaTracks(catalog):
 # ========================
 
 def requerimiento1(catalog, year):
-    mapa = catalog['model']['anio_albumID']
-    mapa_albumes = catalog['model']['albums_id']
-    lst_albumsID = model.get_mapa(mapa, year)['value']
-    albumsLST = model.newList()
-    
-    for album_id in lt.iterator(lst_albumsID):
-        album = model.get_mapa(mapa_albumes, album_id)
-        model.lst_addLast(albumsLST, album)
-
-    albumsLST = model.ordenamientoMerge(albumsLST, model.cmpAlbumsName)
-    return albumsLST, lt.size(albumsLST)
-
+    return model.requerimiento1(catalog, year)
 
 def requerimiento2(catalog, artist):
-    mapa = catalog['model']['artistPopularity_artistID']
-    mapa_artists = catalog['model']['artists_id']
-    lst_artistID = model.get_mapa(mapa, artist)['value']
-    artistLST = model.newList()
-    for artist_id in lt.iterator(lst_artistID):
-        artist = model.get_mapa(mapa_artists, artist_id)
-        model.lst_addLast(artistLST, artist)
-
-    artistLST = model.ordenamientoMerge(artistLST, model.cmpArtistPopularity)
-    return artistLST, lt.size(artistLST)
+    return model.requerimiento2(catalog, artist)
 
 def requerimiento3(catalog, track):
-    mapa = catalog['model']['trackPopularity_trackID']
-    mapa_canciones = catalog['model']['tracks_id']
-    lst_trackID = model.get_mapa(mapa, track)['value']
-    trackLST = model.newList()
-    for track_id in lt.iterator(lst_trackID):
-        track = model.get_mapa(mapa_canciones, track_id)
-        model.lst_addLast(trackLST, track)
-    trackLST = model.ordenamientoMerge(trackLST,model.cmpTrackByDuration)
-    return trackLST, lt.size(trackLST)
+    return model.requerimiento3(catalog, track)
 
+def requerimiento4(catalog, artista, mercado):
+    return model.requerimiento4(catalog, artista, mercado)
+
+def requerimiento5(catalogo, artista):
+    return model.requerimiento5(catalogo, artista)
 
 
 # ========================================
