@@ -71,6 +71,7 @@ def printMenu():
     print("1- Cargar información en el catálogo")
     print("2- req 1")
     print("3- req 2")
+    print("4- req 3")
 
 catalog = None
 
@@ -102,6 +103,13 @@ while True:
         print(lt.firstElement(albumsLST))
         print(lt.lastElement(albumsLST))
         print(lst_size)
+
+    elif int(inputs[0]) == 4:
+        popularity = int(input("Ingrese la popularidad que desea consultar (0-100):"))
+        tracks, lstsize = controller.requerimiento3(catalog, popularity)
+        print(lt.firstElement(tracks))
+        print(lt.lastElement(tracks))
+        print(lstsize)
 
     else:
         sys.exit(0)

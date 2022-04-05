@@ -82,8 +82,8 @@ def CargaAlbums(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
-    #albums = cf.data_dir + 'spotify-albums-utf8-small.csv'
+    #albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
+    albums = cf.data_dir + 'spotify-albums-utf8-small.csv'
     input_file = csv.DictReader(open(albums, encoding='utf-8'))
     for album in input_file:
         model.cargaAlbum(catalog['model'], album)
@@ -94,8 +94,8 @@ def CargaArtists(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
-    #artists = cf.data_dir + 'spotify-artists-utf8-small.csv'
+    #artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
+    artists = cf.data_dir + 'spotify-artists-utf8-small.csv'
     input_file = csv.DictReader(open(artists, encoding='utf-8'))
     for artist in input_file:
         model.cargaArtists(catalog['model'], artist)
@@ -106,8 +106,8 @@ def CargaTracks(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
-    #tracks = cf.data_dir + 'spotify-tracks-utf8-small.csv'
+    #tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
+    tracks = cf.data_dir + 'spotify-tracks-utf8-small.csv'
     input_file = csv.DictReader(open(tracks, encoding='utf-8'))
     for track in input_file:
         model.cargaTracks(catalog['model'], track)
@@ -157,6 +157,17 @@ def requerimiento2(catalog, artist):
 
     artistLST = model.ordenamientoMerge(artistLST, model.cmpArtistPopularity)
     return artistLST, lt.size(artistLST)
+
+def requerimiento3(catalog, track):
+    mapa = catalog['model']['trackPopularity_trackID']
+    mapa_canciones = catalog['model']['tracks_id']
+    lst_trackID = model.get_mapa(mapa, track)['value']
+    trackLST = model.newList()
+    for track_id in lt.iterator(lst_trackID):
+        track = model.get_mapa(mapa_canciones, track_id)
+        model.lst_addLast(trackLST, track)
+    trackLST = model.ordenamientoMerge(trackLST,model.cmpTrackByDuration)
+    return trackLST, lt.size(trackLST)
 
 
 

@@ -55,7 +55,8 @@ def newCatalog():
         'tracks_id': None,
         'anio_albumID': None,
         'artistPopularity_artistID': None,
-        'paisTrack_idTrack': None}
+        'paisTrack_idTrack': None,
+        'trackPopularity_trackID':None}
 
     """
     Este indice crea un map cuya llave es el identificador del libro
@@ -98,6 +99,11 @@ def newCatalog():
                                  loadfactor=4,
                                  comparefunction=None)
 
+    catalog['trackPopularity_trackID'] = mp.newMap(1000,                
+                                        maptype = 'CHAINING',
+                                        loadfactor=4,
+                                        comparefunction=None)
+
     return catalog
 
 
@@ -130,13 +136,14 @@ def cargaArtists(catalog, artist):
 def cargaTracks(catalog, track):
     track['artists_id'] = (track['artists_id'].replace("[", "").replace("]", "").replace("'", "").replace(" ", "")).split(",")
     track['popularity'] = float(track['popularity'])
-    track['liveness'] = float(track['liveness'])
+    track['liveness'] = int(float(track['liveness']))
     track['tempo'] = float(track['tempo'])
     track['duration_ms'] = float(track['duration_ms'])
     track['available_markets'] = (track['available_markets'].replace("[", "").replace("]", "").replace("'", "").replace('"', "")).split(",")
     track['disc_number'] = float(track['disc_number'])
     add_tracksID_tracksNames(catalog, track)
     carga_requerimiento4(catalog, track)
+    carga_requerimiento3(catalog, track)
 
 
 def add_albumsID_albumsNames(catalog, album):
@@ -181,6 +188,19 @@ def carga_requerimiento2(catalog, artist):
         mp.put(artistPopularity_artistID, popularity, lst)
 
     lt.addLast(lst, artist['id'])
+
+def carga_requerimiento3(catalog, track):
+    trackPopularity_trackID = catalog['trackPopularity_trackID']
+    popularity = track['popularity']
+    exist = mp.contains(trackPopularity_trackID,popularity)
+
+    if exist:
+        entry = mp.get(trackPopularity_trackID, popularity)
+        lst = me.getValue(entry)
+    else:
+        lst = newList()
+        mp.put(trackPopularity_trackID, popularity, lst)
+    lt.addLast(lst, track['id'])
 
 
 def carga_requerimiento4(catalog, track):
@@ -244,6 +264,13 @@ def cmpArtistPopularity(artist1, artist2):
         return artist1['value']["name"] > artist2['value']["name"]
     else:
         return artist1['value']["followers"] > artist2['value']["followers"]
+
+def cmpTrackByDuration(track1, track2):
+    if track1['value']['duration_ms'] == track2['value']['duration_ms']:
+        return track1['value']['name'] > track2['value']['name']
+    else:
+        return track1['value']['duration_ms'] > track2['value']['duration_ms']
+
 
 # =========================
 # Funciones de ordenamiento
