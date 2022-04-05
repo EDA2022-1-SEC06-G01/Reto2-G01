@@ -62,53 +62,53 @@ def newCatalog():
     """
     Este indice crea un map cuya llave es el identificador del libro
     """
-    catalog['albums_id'] = mp.newMap(10000,
-                                   maptype='CHAINING',
-                                   loadfactor=4,
+    catalog['albums_id'] = mp.newMap(76000,
+                                   maptype='PROBING',
+                                   loadfactor=0.5,
                                    comparefunction=None)
 
     """
     Este indice crea un map cuya llave es el año de publicacion
     """
-    catalog['artists_id'] = mp.newMap(1000,
-                                 maptype='CHAINING',
-                                 loadfactor=4,
+    catalog['artists_id'] = mp.newMap(57000,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
                                  comparefunction=None)
 
     
-    catalog['artistsName_id'] = mp.newMap(1000,
-                                 maptype='CHAINING',
-                                 loadfactor=4,
+    catalog['artistsName_id'] = mp.newMap(56000,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
                                  comparefunction=None)
 
 
     """
     Este indice crea un map cuya llave es el año de publicacion
     """
-    catalog['tracks_id'] = mp.newMap(1000,
-                                 maptype='CHAINING',
-                                 loadfactor=4,
+    catalog['tracks_id'] = mp.newMap(102000,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
                                  comparefunction=None)
     
 
-    catalog['anio_albumID'] = mp.newMap(1000,
-                                 maptype='CHAINING',
-                                 loadfactor=4,
+    catalog['anio_albumID'] = mp.newMap(100,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
                                  comparefunction=None)
     
-    catalog['artistPopularity_artistID'] = mp.newMap(1000,
-                                 maptype='CHAINING',
-                                 loadfactor=4,
+    catalog['artistPopularity_artistID'] = mp.newMap(100,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
                                  comparefunction=None)
 
-    catalog['canciones_por_artistas'] = mp.newMap(1000,
-                                 maptype='CHAINING',
-                                 loadfactor=4,
+    catalog['canciones_por_artistas'] = mp.newMap(57000,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
                                  comparefunction=None)
     
-    catalog['albumes_por_artistas'] = mp.newMap(1000,
-                                 maptype='CHAINING',
-                                 loadfactor=4,
+    catalog['albumes_por_artistas'] = mp.newMap(40000,
+                                 maptype='PROBING',
+                                 loadfactor=0.5,
                                  comparefunction=None)
 
 
@@ -121,7 +121,9 @@ def newCatalog():
 # Funciones para agregar informacion al catalogo
 # ==============================================
 
-# Carga general albums
+    # ========================
+    # Carga General Album
+    # ========================
 def cargaAlbum(catalog, album):
     album['total_tracks'] = float(album['total_tracks'])
     album['available_markets'] = list((album['available_markets'].replace("[", "").replace("]", "").replace("'", "").replace('"', "").replace(" ", "")).split(","))
@@ -131,8 +133,9 @@ def cargaAlbum(catalog, album):
     albumes_por_artistas(catalog, album)
     
 
-
-# Carga general artists
+    # ========================
+    # Carga General Artists
+    # ========================
 def cargaArtists(catalog, artist):
     artist['artist_popularity'] = float(artist['artist_popularity'])
     artist['genres'] = (artist['genres'].replace("[", "").replace("]", "").replace("'", "")).split(",")
@@ -142,7 +145,9 @@ def cargaArtists(catalog, artist):
     add_artistsName_id(catalog, artist)
 
 
-# Carga general tracks
+    # ========================
+    # Carga General Tracks
+    # ========================
 def cargaTracks(catalog, track):
     track['artists_id'] = (track['artists_id'].replace("[", "").replace("]", "").replace("'", "").replace(" ", "")).split(",")
     track['popularity'] = float(track['popularity'])
@@ -157,6 +162,10 @@ def cargaTracks(catalog, track):
 
 
 
+# ========================
+# Funciones aniadir datos
+# ========================
+
 def add_albumsID_albumsNames(catalog, album):
     mp.put(catalog['albums_id'], album['id'], album)
 
@@ -168,11 +177,9 @@ def add_artistsID_artistsNames(catalog, artist):
 def add_tracksID_tracksNames(catalog, track):
     mp.put(catalog['tracks_id'], track['id'], track)
 
+
 def add_artistsName_id(catalog, artist):
     mp.put(catalog['artistsName_id'], artist['name'], artist["id"])
-
-
-
 
 
 
@@ -181,20 +188,9 @@ def add_artistsName_id(catalog, artist):
 # Funciones requerimientos
 # ========================
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # =========================
+    # Funciones Requerimiento 1
+    # =========================
 def carga_requerimiento1(catalog, album):
     anio_albumID = catalog['anio_albumID']
     year = album['release_date'].year
@@ -225,7 +221,9 @@ def requerimiento1(catalog, year):
     return albumsLST, cantidad_albumes
 
 
-#requerimiento 2
+    # =========================
+    # Funciones Requerimiento 2
+    # =========================
 
 def carga_requerimiento2(catalog, artist):
     artistPopularity_artistID = catalog['artistPopularity_artistID']
@@ -254,7 +252,9 @@ def requerimiento2(catalog, artist):
     return artistLST, lt.size(artistLST)
 
 
-#requerimiento 3
+    # =========================
+    # Funciones Requerimiento 3
+    # =========================
 
 def carga_requerimiento3(catalog, track):
     trackPopularity_trackID = catalog['trackPopularity_trackID']
@@ -281,7 +281,9 @@ def requerimiento3(catalog, track):
     numero_canciones = lt.size(trackLST)
     return trackLST, numero_canciones
 
-# funciones requerimiento 4
+    # =========================
+    # Funciones Requerimiento 4
+    # =========================
 def canciones_por_artistas(catalog, track):
     canciones_por_artistas = catalog['canciones_por_artistas']
     for artista in track['artists_id']:
@@ -314,7 +316,9 @@ def requerimiento4(catalog, artista, mercado):
     return canciones
     
 
-# Funciones requerimiento 5
+    # =========================
+    # Funciones Requerimiento 5
+    # =========================
 
 def albumes_por_artistas(catalogo, album):
     albumes_por_artistas = catalogo['albumes_por_artistas']
@@ -353,24 +357,9 @@ def requerimiento5(catalogo, artista):
     listaCancionesPopulares = listaAlbums_cancionesPopulares(catalogo, albums_artista)
     return albums_artista, listaCancionesPopulares, album_sencillo, album_recopilacion, album_album
 
+
+
     
-    
-# Buen codigo
-def artistID_to_artistValue(catalog, artistID):
-    return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
-
-def ArtistName_to_artistValue(catalog, artistName):
-    mapa = catalog['model']['artistsName_id']
-    artistID = me.getValue(mp.get(mapa, artistName))
-    return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
-
-def trackID_to_trackValue(catalog, trackID):
-    try:
-        return me.getValue(mp.get(catalog['model']['tracks_id'], trackID))
-    except:
-        print(f"No se encontro valor {trackID}")
-
-
 # ================================
 # Funciones para creacion de datos
 # ================================
@@ -384,10 +373,18 @@ def trackID_to_trackValue(catalog, trackID):
 def artistID_to_artistValue(catalog, artistID):
     return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
 
+
 def ArtistName_to_artistValue(catalog, artistName):
     mapa = catalog['model']['artistsName_id']
     artistID = me.getValue(mp.get(mapa, artistName))
     return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
+
+
+def trackID_to_trackValue(catalog, trackID):
+    try:
+        return me.getValue(mp.get(catalog['model']['tracks_id'], trackID))
+    except:
+        print(f"No se encontro valor {trackID}")
 
 
 
@@ -412,7 +409,7 @@ def cmpTrackByDuration(track1, track2):
         return track1['value']['duration_ms'] > track2['value']['duration_ms']
 
 def cmpRequerimiento4(track1, track2):
-    
+    # error
     if track1['popularity'] != track2['popularity']:
         return track1['popularity'] > track2['popularity']
     elif track1['duration_ms'] != track2['duration_ms']:
@@ -430,22 +427,3 @@ def cmpCanciones(track1, track2):
         return track1['duration_ms'] > track2['duration_ms']
     else:
         return track1['name'] > track2['name']
-
-# =========================
-# Funciones de ordenamiento
-# =========================
-
-def ordenamientoSelection(lst, cmpfunction):
-    return selectionsort.sort(lst, cmpfunction)
-    
-def ordenamientoInsetion(lst, cmpfunction):
-    return insertionsort.sort(lst, cmpfunction)
-
-def ordenamientoShell(lst, cmpfunction):
-    return shellsort.sort(lst, cmpfunction)
-
-def ordenamientoMerge(lst, cmpfunction):
-    return mergesort.sort(lst, cmpfunction)
-
-def ordenamientoQuick(lst, cmpfunction):
-    return quicksort.sort(lst, cmpfunction)

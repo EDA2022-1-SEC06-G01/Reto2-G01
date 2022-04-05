@@ -126,6 +126,16 @@ while True:
         print(album_album)
         # Falta debug sorting
 
+    elif int(inputs[0]) == 7:
+        print(f"Cantidad albums_id: {mp.size(catalog['model']['albums_id'])}")
+        print(f"Cantidad artists_id: {mp.size(catalog['model']['artists_id'])}")
+        print(f"Cantidad artistsName_id: {mp.size(catalog['model']['artistsName_id'])}")
+        print(f"Cantidad tracks_id: {mp.size(catalog['model']['tracks_id'])}")
+        print(f"Cantidad anio_albumID: {mp.size(catalog['model']['anio_albumID'])}")
+        print(f"Cantidad artistPopularity_artistID: {mp.size(catalog['model']['artistPopularity_artistID'])}")
+        print(f"Cantidad canciones_por_artistas: {mp.size(catalog['model']['canciones_por_artistas'])}")
+        print(f"Cantidad albumes_por_artistas: {mp.size(catalog['model']['albumes_por_artistas'])}")
+
     else:
         sys.exit(0)
 sys.exit(0)
