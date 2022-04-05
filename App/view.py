@@ -29,8 +29,6 @@ import sys
 default_limit = 1000
 sys.setrecursionlimit(default_limit*10)
 from DISClib.ADT import map as mp
-from DISClib.ADT import list as lt
-import model
 
 
 

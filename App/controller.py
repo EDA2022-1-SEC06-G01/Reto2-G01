@@ -25,7 +25,6 @@ import model
 import csv
 import tracemalloc
 import time
-from DISClib.ADT import list as lt
 
 
 """
