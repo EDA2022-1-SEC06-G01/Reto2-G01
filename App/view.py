@@ -30,6 +30,7 @@ default_limit = 1000
 sys.setrecursionlimit(default_limit*10)
 from DISClib.ADT import map as mp
 from DISClib.ADT import list as lt
+import model
 
 
 
@@ -102,6 +103,11 @@ while True:
         print(lt.firstElement(albumsLST))
         print(lt.lastElement(albumsLST))
         print(lst_size)
+
+    elif int(inputs[0]) == 4:
+        artista = input("Introduzca el artista que desea consultar: ")
+        mercado = input("Introduzca el mercado que desea consultar: ")
+        print(lt.firstElement(model.requerimiento4(catalog, artista, mercado)))
 
     else:
         sys.exit(0)
