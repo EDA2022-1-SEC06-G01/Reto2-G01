@@ -340,7 +340,6 @@ def requerimiento5(catalogo, artista):
     albumes_por_artistas = catalogo['model']['albumes_por_artistas']
     artistID = ArtistName_to_artistValue(catalogo, artista)['id']
     albums_artista = me.getValue(mp.get(albumes_por_artistas, artistID))
-    print(f"este es la cahtidad{lt.size(albums_artista)}")
     album_sencillo = 0
     album_recopilacion = 0
     album_album = 0
