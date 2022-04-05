@@ -93,17 +93,17 @@ while True:
         
     elif int(inputs[0]) == 2:
         year = int(input("Introduzca el anio que desea consultar: "))
-        albumsLST, lst_size = controller.requerimiento1(catalog, year)
+        albumsLST, cantidad_albumes = controller.requerimiento1(catalog, year)
         print(lt.firstElement(albumsLST))
         print(lt.lastElement(albumsLST))
-        print(lst_size)
+        print(cantidad_albumes)
 
     elif int(inputs[0]) == 3:
         popularity = int(input("Introduzca la popularidad que desea consultar: "))
-        albumsLST, lst_size = controller.requerimiento2(catalog, popularity)
-        print(lt.firstElement(albumsLST))
-        print(lt.lastElement(albumsLST))
-        print(lst_size)
+        artistLST, numero_canciones = controller.requerimiento2(catalog, popularity)
+        print(lt.firstElement(artistLST))
+        print(lt.lastElement(artistLST))
+        print(numero_canciones)
 
     elif int(inputs[0]) == 4:
         popularity = int(input("Ingrese la popularidad que desea consultar (0-100):"))
@@ -115,14 +115,16 @@ while True:
     elif int(inputs[0]) == 5:
         artista = input("Introduzca el artista que desea consultar: ")
         mercado = input("Introduzca el mercado que desea consultar: ")
-        print(lt.firstElement(model.requerimiento4(catalog, artista, mercado)))
+        canciones = controller.requerimiento4(catalog, artista, mercado)
+        print(lt.firstElement(canciones))
 
     elif int(inputs[0]) == 6:
         artista = input("Introduzca el artista que desea consultar: ")
-        albums_artista, listaCancionesPopulares, album_sencillo, album_recopilacion, album_album = model.requerimiento5(catalog, artista)
+        albums_artista, listaCancionesPopulares, album_sencillo, album_recopilacion, album_album = controller.requerimiento5(catalog, artista)
         print(album_recopilacion)
         print(album_sencillo)
         print(album_album)
+        # Falta debug sorting
 
     else:
         sys.exit(0)
