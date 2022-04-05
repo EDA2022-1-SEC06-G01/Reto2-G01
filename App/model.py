@@ -248,7 +248,45 @@ def requerimiento4(catalog, artista, mercado):
     return canciones
     
 
+# Funciones requerimiento 5
 
+def albumes_por_artistas(catalogo, album):
+    albumes_por_artistas = catalogo['albumes_por_artistas']
+    artista = album['artist_id']
+    existe = mp.contains(albumes_por_artistas, artista)
+    if existe == True:
+        entry = mp.get(albumes_por_artistas, artista)
+        lst = me.getValue(entry)
+    else:
+        lst = newList()
+        mp.put(albumes_por_artistas, artista, lst)
+    lt.addLast(lst, album)
+
+def listaAlbums_cancionesPopulares(catalogo, lista_albumes):
+    lst = lt.newList(datastructure="ARRAY_LIST")
+    for album in lt.iterator(lista_albumes):
+        track = album["track_id"]
+        lt.addLast(lst, trackID_to_trackValue(catalogo, track))
+    lst = ordenamientoMerge(lst, cmpCanciones)
+    return lst
+
+def requerimiento5(catalogo, artista):
+    albumes_por_artistas = catalogo['model']['albumes_por_artistas']
+    artistID = ArtistName_to_artistValue(catalogo, artista)['id']
+    albums_artista = me.getValue(mp.get(albumes_por_artistas, artistID))
+    print(f"este es la cahtidad{lt.size(albums_artista)}")
+    album_sencillo = 0
+    album_recopilacion = 0
+    album_album = 0
+    for album in lt.iterator(albums_artista):
+        if album["album_type"] == "single":
+            album_sencillo += 1
+        elif album["album_type"] == "compilation":
+            album_recopilacion += 1
+        else:
+            album_album += 1
+    listaCancionesPopulares = listaAlbums_cancionesPopulares(catalogo, albums_artista)
+    return albums_artista, listaCancionesPopulares, album_sencillo, album_recopilacion, album_album
 
     
     
@@ -262,7 +300,10 @@ def ArtistName_to_artistValue(catalog, artistName):
     return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
 
 def trackID_to_trackValue(catalog, trackID):
-    return me.getValue(mp.get(catalog['model']['tracks_id'], trackID))
+    try:
+        return me.getValue(mp.get(catalog['model']['tracks_id'], trackID))
+    except:
+        print(f"No se encontro valor {trackID}")
 
 
 # ================================
@@ -324,7 +365,19 @@ def cmpTrackByDuration(track1, track2):
         return track1['value']['duration_ms'] > track2['value']['duration_ms']
 
 def cmpRequerimiento4(track1, track2):
+    
     if track1['popularity'] != track2['popularity']:
+        return track1['popularity'] > track2['popularity']
+    elif track1['duration_ms'] != track2['duration_ms']:
+        return track1['duration_ms'] > track2['duration_ms']
+    else:
+        return track1['name'] > track2['name']
+
+def cmpCanciones(track1, track2):
+    #revisar los nones que aparecen
+    if track1 == None or track2 == None:
+        return
+    elif track1['popularity'] != track2['popularity']:
         return track1['popularity'] > track2['popularity']
     elif track1['duration_ms'] != track2['duration_ms']:
         return track1['duration_ms'] > track2['duration_ms']

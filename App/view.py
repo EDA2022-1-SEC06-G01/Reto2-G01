@@ -117,6 +117,15 @@ while True:
         mercado = input("Introduzca el mercado que desea consultar: ")
         print(lt.firstElement(model.requerimiento4(catalog, artista, mercado)))
 
+    elif int(inputs[0]) == 6:
+        artista = input("Introduzca el artista que desea consultar: ")
+        albums_artista, listaCancionesPopulares, album_sencillo, album_recopilacion, album_album = model.requerimiento5(catalog, artista)
+        print(album_recopilacion)
+        print(album_sencillo)
+        print(album_album)
+
     else:
         sys.exit(0)
 sys.exit(0)
+
+# Various Artists
