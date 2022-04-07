@@ -105,7 +105,7 @@ def printRequerimiento2(lst, cantidad_artistas, popularity):
         
     return table.get_string()
 
-def printRequerimiento2(lst, size, popularity):
+def printRequerimiento3(lst, size, popularity):
     print("========= Req No. 3 Inputs =========")
     print(f"The trakcs with popularity rating of: {popularity}")
     print()
@@ -113,8 +113,15 @@ def printRequerimiento2(lst, size, popularity):
     print(f"There are {size} tracks with {popularity}")
     print()
     print(f"The first 3 and last 3 tracks with {popularity} are...")
-
-
+    table = PrettyTable()
+    table.field_names= ['popularity','duration_ms','name_track', 'disc_number', 'track_number', 'album_name', 'artists_names', 'href', 'lyrics']
+    for i in range(1, 4):
+        current_lst = lt.getElement(lst, i)
+        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    return table.get_string()
 # ================================
 # Funcion para inicializar el menu
 # ================================
@@ -168,9 +175,10 @@ while True:
     elif int(inputs[0]) == 4:
         popularity = int(input("Ingrese la popularidad que desea consultar (0-100):"))
         tracks, lstsize = controller.requerimiento3(catalog, popularity)
-        print(lt.firstElement(tracks))
-        print(lt.lastElement(tracks))
-        print(lstsize)
+        #print(lt.firstElement(tracks))
+        print(printRequerimiento3(tracks, lstsize, popularity))
+        #print(lt.lastElement(tracks))
+        #print(lstsize)
         
     elif int(inputs[0]) == 5:
         artista = input("Introduzca el artista que desea consultar: ")
