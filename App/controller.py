@@ -81,8 +81,8 @@ def CargaAlbums(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
-    #albums = cf.data_dir + 'spotify-albums-utf8-small.csv'
+    #albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
+    albums = cf.data_dir + 'spotify-albums-utf8-small.csv'
     input_file = csv.DictReader(open(albums, encoding='utf-8'))
     for album in input_file:
         model.cargaAlbum(catalog['model'], album)
@@ -93,8 +93,8 @@ def CargaArtists(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
-    #artists = cf.data_dir + 'spotify-artists-utf8-small.csv'
+    #artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
+    artists = cf.data_dir + 'spotify-artists-utf8-small.csv'
     input_file = csv.DictReader(open(artists, encoding='utf-8'))
     for artist in input_file:
         model.cargaArtists(catalog['model'], artist)
@@ -105,8 +105,8 @@ def CargaTracks(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
-    #tracks = cf.data_dir + 'spotify-tracks-utf8-small.csv'
+    #tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
+    tracks = cf.data_dir + 'spotify-tracks-utf8-small.csv'
     input_file = csv.DictReader(open(tracks, encoding='utf-8'))
     for track in input_file:
         model.cargaTracks(catalog['model'], track)
@@ -120,12 +120,15 @@ def CargaTracks(catalog):
 
 
 
-# =======================================
-# Funciones de consulta sobre el catálogo
-# =======================================
+# =====================
+# Funciones de consulta
+# =====================
 
+def artistID_to_artistName(catalog, artist_id):
+    return model.artistID_to_artistName(catalog, artist_id)
 
-
+def trackID_to_trackName(catalog, track_id):
+    return model.trackID_to_trackName(catalog, track_id)
 
 # ========================
 # Funciones requerimientos

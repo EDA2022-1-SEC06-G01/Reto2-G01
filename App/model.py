@@ -138,7 +138,7 @@ def cargaAlbum(catalog, album):
     # ========================
 def cargaArtists(catalog, artist):
     artist['artist_popularity'] = float(artist['artist_popularity'])
-    artist['genres'] = (artist['genres'].replace("[", "").replace("]", "").replace("'", "")).split(",")
+    artist['genres'] = list((artist['genres'].replace("[", "").replace("]", "").replace("'", "")).split(","))
     artist['followers'] = float(artist['followers'])
     add_artistsID_artistsNames(catalog, artist)
     carga_requerimiento2(catalog, artist) 
@@ -213,7 +213,8 @@ def requerimiento1(catalog, year):
     albumsLST = lt.newList(datastructure='ARRAY_LIST')
     
     for album_id in lt.iterator(lst_albumsID):
-        album = mp.get(mapa_albumes, album_id)
+        # recordar colocar me.getValue
+        album = me.getValue(mp.get(mapa_albumes, album_id))
         lt.addLast(albumsLST, album)
 
     albumsLST = shellsort.sort(albumsLST, cmpAlbumsName)
@@ -380,11 +381,21 @@ def ArtistName_to_artistValue(catalog, artistName):
     return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
 
 
+def artistID_to_artistName(catalog, artist_id):
+    return artistID_to_artistValue(catalog, artist_id)["name"]
+
 def trackID_to_trackValue(catalog, trackID):
     try:
         return me.getValue(mp.get(catalog['model']['tracks_id'], trackID))
     except:
-        print(f"No se encontro valor {trackID}")
+        return None
+
+def trackID_to_trackName(catalog, track_id):
+    request = trackID_to_trackValue(catalog, track_id)
+    if request == None:
+        return "Not found"
+    else:
+        return trackID_to_trackValue(catalog, track_id)["name"]
 
 
 
