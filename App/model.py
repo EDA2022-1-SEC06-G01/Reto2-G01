@@ -111,7 +111,10 @@ def newCatalog():
                                  loadfactor=0.5,
                                  comparefunction=None)
 
-
+    catalog['trackPopularity_trackID'] = mp.newMap(40000,
+                                maptype='PROBING',
+                                loadfactor=0.5,
+                                comparefunction=None)
     return catalog
 
 
@@ -157,6 +160,7 @@ def cargaTracks(catalog, track):
     track['available_markets'] = list((track['available_markets'].replace("[", "").replace("]", "").replace("'", "").replace('"', "")).replace(" ", "").split(","))
     track['disc_number'] = float(track['disc_number'])
     add_tracksID_tracksNames(catalog, track)
+    carga_requerimiento3(catalog, track)
     canciones_por_artistas(catalog, track)
 
 

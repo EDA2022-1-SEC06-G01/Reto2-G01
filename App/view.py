@@ -105,6 +105,15 @@ def printRequerimiento2(lst, cantidad_artistas, popularity):
         
     return table.get_string()
 
+def printRequerimiento2(lst, size, popularity):
+    print("========= Req No. 3 Inputs =========")
+    print(f"The trakcs with popularity rating of: {popularity}")
+    print()
+    print("========= Req No. 3 Answer =========")
+    print(f"There are {size} tracks with {popularity}")
+    print()
+    print(f"The first 3 and last 3 tracks with {popularity} are...")
+
 
 # ================================
 # Funcion para inicializar el menu
@@ -159,9 +168,9 @@ while True:
     elif int(inputs[0]) == 4:
         popularity = int(input("Ingrese la popularidad que desea consultar (0-100):"))
         tracks, lstsize = controller.requerimiento3(catalog, popularity)
-        #print(lt.firstElement(tracks))
-        #print(lt.lastElement(tracks))
-        #print(lstsize)
+        print(lt.firstElement(tracks))
+        print(lt.lastElement(tracks))
+        print(lstsize)
         
     elif int(inputs[0]) == 5:
         artista = input("Introduzca el artista que desea consultar: ")
