@@ -61,9 +61,9 @@ def loadData(catalog):
     start_time = getTime()
     start_memory = getMemory()
 
-    CargaAlbums(catalog)
-    CargaArtists(catalog)
-    CargaTracks(catalog)
+    FirstThreeAlbums, LastThreeAlbums = CargaAlbums(catalog)
+    FirstThreeArtists, LastThreeArtists = CargaArtists(catalog)
+    FirstThreeTracks, LastThreeTracks = CargaTracks(catalog)
 
     stop_memory = getMemory()
     stop_time = getTime()
@@ -73,7 +73,11 @@ def loadData(catalog):
     delta_time = deltaTime(stop_time, start_time)
     delta_memory = deltaMemory(stop_memory, start_memory)
 
-    return delta_time, delta_memory
+    sizeAlbums = model.sizeMap(catalog['model']['albums_id'])
+    sizeArtists = model.sizeMap(catalog['model']['artists_id'])
+    sizeTracks = model.sizeMap(catalog['model']['tracks_id'])
+
+    return delta_time, delta_memory, sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastThreeAlbums, FirstThreeArtists, LastThreeArtists, FirstThreeTracks, LastThreeTracks
 
 
 def CargaAlbums(catalog):
@@ -84,8 +88,13 @@ def CargaAlbums(catalog):
     #albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
     albums = cf.data_dir + 'spotify-albums-utf8-small.csv'
     input_file = csv.DictReader(open(albums, encoding='utf-8'))
+    FirstThreeAlbums = model.newList("ARRAY_LIST")
+    LastThreeAlbums = model.newList("SINGLE_LINKED")
     for album in input_file:
         model.cargaAlbum(catalog['model'], album)
+        model.getFirstAndLastThree(album, FirstThreeAlbums, LastThreeAlbums)
+    return FirstThreeAlbums, LastThreeAlbums
+        
 
 
 def CargaArtists(catalog):
@@ -96,8 +105,12 @@ def CargaArtists(catalog):
     #artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
     artists = cf.data_dir + 'spotify-artists-utf8-small.csv'
     input_file = csv.DictReader(open(artists, encoding='utf-8'))
+    FirstThreeArtists = model.newList("ARRAY_LIST")
+    LastThreeArtists = model.newList("SINGLE_LINKED")
     for artist in input_file:
         model.cargaArtists(catalog['model'], artist)
+        model.getFirstAndLastThree(artist, FirstThreeArtists, LastThreeArtists)
+    return FirstThreeArtists, LastThreeArtists
 
 
 def CargaTracks(catalog):
@@ -108,8 +121,12 @@ def CargaTracks(catalog):
     #tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
     tracks = cf.data_dir + 'spotify-tracks-utf8-small.csv'
     input_file = csv.DictReader(open(tracks, encoding='utf-8'))
+    FirstThreeTracks = model.newList("ARRAY_LIST")
+    LastThreeTracks = model.newList("SINGLE_LINKED")
     for track in input_file:
         model.cargaTracks(catalog['model'], track)
+        model.getFirstAndLastThree(track, FirstThreeTracks, LastThreeTracks)
+    return FirstThreeTracks, LastThreeTracks
 
 
 

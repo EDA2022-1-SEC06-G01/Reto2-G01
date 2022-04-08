@@ -108,6 +108,31 @@ def printRequerimiento2(lst, cantidad_artistas, popularity):
     return table.get_string()
 
 
+def printRequerimiento3(lst, size, popularity):
+    print("========= Req No. 3 Inputs =========")
+    print(f"The trakcs with popularity rating of: {popularity}")
+    print()
+    print("========= Req No. 3 Answer =========")
+    print(f"There are {size} tracks with {popularity}")
+    print()
+    print(f"The first 3 and last 3 tracks with {popularity} are...")
+    table = PrettyTable()
+    table.field_names= ['popularity','duration_ms','name_track', 'disc_number', 'track_number', 'album_name', 'artists_names', 'href', 'lyrics']
+    for i in range(1, 4):
+        current_lst = lt.getElement(lst, i)
+        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
+   
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+   
+    for _ in range(size - 2, size + 1):
+        current_lst = lt.getElement(lst, _)
+        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
+   
+    return table.get_string()
+
+
 def printRequerimiento4(lst, number_of_tracks, number_of_albums, artista, mercado):
     country_name = pycountry.countries.get(alpha_2=mercado)
     print("========= Req No. 4 Inputs =========")
@@ -180,31 +205,29 @@ def printRequerimiento5(albums_artista, numberItems_AlbumsArtista, artista, comp
         print(table.get_string())
     
 
-
-def printRequerimiento3(lst, size, popularity):
-    print("========= Req No. 3 Inputs =========")
-    print(f"The trakcs with popularity rating of: {popularity}")
+def printCargaDatos(sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastThreeAlbums, FirstThreeArtists, LastThreeArtists, FirstThreeTracks, LastThreeTracks):
+    print(" - - - - - - - - - - - - - - - - - - - - - - - ")
+    print(f"artists ID count: {sizeArtists}")
+    print(f"albums ID count: {sizeAlbums}")
+    print(f"tracks ID count: {sizeTracks}")
+    print(" - - - - - - - - - - - - - - - - - - - - - - - ")
     print()
-    print("========= Req No. 3 Answer =========")
-    print(f"There are {size} tracks with {popularity}")
-    print()
-    print(f"The first 3 and last 3 tracks with {popularity} are...")
+    print("The first 3 and last 3 artists in the range are...")
     table = PrettyTable()
-    table.field_names= ['popularity','duration_ms','name_track', 'disc_number', 'track_number', 'album_name', 'artists_names', 'href', 'lyrics']
-    for i in range(1, 4):
-        current_lst = lt.getElement(lst, i)
-        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
-   
-    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
-    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
-    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
-   
-    for _ in range(size - 2, size + 1):
-        current_lst = lt.getElement(lst, _)
-        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
-   
-        
-    return table.get_string()
+    table.field_names = ["name", "artist_popularity", "followers", "relevant_track_name", "genres"]
+    for _ in range(1, 4):
+        current_lst = lt.getElement(FirstThreeArtists, _)
+        table.add_row([current_lst["name"], current_lst["artist_popularity"], current_lst["followers"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), ',\n'.join(current_lst["genres"])])
+
+    table.add_row(["...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "..."])
+
+    for _ in range(3 - 2, 3 + 1):
+        current_lst = lt.getElement(LastThreeArtists, _)
+        table.add_row([current_lst["name"], current_lst["artist_popularity"], current_lst["followers"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), ',\n'.join(current_lst["genres"])])
+    print(table.get_string())
+
 # ================================
 # Funcion para inicializar el menu
 # ================================
@@ -232,7 +255,8 @@ while True:
     if int(inputs[0]) == 1:
         print("Cargando información de los archivos ....")
         catalog = newCatalog()
-        delta_time, delta_memory = controller.loadData(catalog)
+        delta_time, delta_memory, sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastThreeAlbums, FirstThreeArtists, LastThreeArtists, FirstThreeTracks, LastThreeTracks = controller.loadData(catalog)
+        printCargaDatos(sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastThreeAlbums, FirstThreeArtists, LastThreeArtists, FirstThreeTracks, LastThreeTracks)
         #print(mp.size(catalog['model']['albums_id']))
         #print(mp.size(catalog['model']['artists_id']))
         #print(mp.size(catalog['model']['tracks_id']))

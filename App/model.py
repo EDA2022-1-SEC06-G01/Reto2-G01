@@ -111,7 +111,7 @@ def newCatalog():
                                  loadfactor=0.5,
                                  comparefunction=None)
 
-    catalog['trackPopularity_trackID'] = mp.newMap(40000,
+    catalog['trackPopularity_trackID'] = mp.newMap(57000,
                                 maptype='PROBING',
                                 loadfactor=0.5,
                                 comparefunction=None)
@@ -164,7 +164,24 @@ def cargaTracks(catalog, track):
     canciones_por_artistas(catalog, track)
 
 
+    # ========================
+    # Primeros y ultimos 3 y conseguir datos para print carga
+    # ========================
 
+def getFirstAndLastThree(item, FirstThree, LastThree):
+    if lt.size(FirstThree) != 3:
+        lt.addLast(FirstThree, item)
+    if lt.size(LastThree) >= 3:
+        lt.addLast(LastThree, item)
+        lt.removeFirst(LastThree)
+    else:
+        lt.addLast(LastThree, item)
+
+def newList(listType):
+    return lt.newList(datastructure=listType)
+
+def sizeMap(map):
+    return mp.size(map)
 
 # ========================
 # Funciones aniadir datos
@@ -372,13 +389,6 @@ def requerimiento5(catalogo, artista):
         lt.addLast(firstAndLastThree_TrackId, value["track_id"])
         lt.addLast(firstAndLastThree_AlbumName, value["name"])
     return albums_artista, numberItems_AlbumsArtista, firstAndLastThree_TrackId, firstAndLastThree_AlbumName, album_sencillo, album_recopilacion, album_album
-
-
-
-    
-# ================================
-# Funciones para creacion de datos
-# ================================
 
 
 
