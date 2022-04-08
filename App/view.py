@@ -20,6 +20,7 @@
  * along withthis program.  If not, see <http://www.gnu.org/licenses/>.
  """
 
+from matplotlib import artist
 import config as cf
 import sys
 import controller
@@ -120,7 +121,10 @@ def printRequerimiento3(lst, size, popularity):
     table.field_names= ['popularity','duration_ms','name_track', 'disc_number', 'track_number', 'album_name', 'artists_names', 'href', 'lyrics']
     for i in range(1, 4):
         current_lst = lt.getElement(lst, i)
-        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
+        artists = ""
+        for _ in current_lst["value"]["artists_id"]:
+            artists += f"{controller.artistID_to_artistName(catalog, _)}, \n"
+        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],controller.albumID_to_albumName(catalog, current_lst["value"]["album_id"]),artists,current_lst['value']['href'],current_lst['value']['lyrics'][0:10] if current_lst['value']['lyrics'] != "-99" else "Not found"])
    
     table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
     table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
@@ -128,7 +132,10 @@ def printRequerimiento3(lst, size, popularity):
    
     for _ in range(size - 2, size + 1):
         current_lst = lt.getElement(lst, _)
-        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
+        artists = ""
+        for _ in current_lst["value"]["artists_id"]:
+            artists += f"{controller.artistID_to_artistName(catalog, _)}, \n"
+        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],controller.albumID_to_albumName(catalog, current_lst["value"]["album_id"]),artists,current_lst['value']['href'],current_lst['value']['lyrics'][0:10] if current_lst['value']['lyrics'] != "-99" else "Not found"])
    
     return table.get_string()
 
@@ -226,6 +233,46 @@ def printCargaDatos(sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastT
     for _ in range(3 - 2, 3 + 1):
         current_lst = lt.getElement(LastThreeArtists, _)
         table.add_row([current_lst["name"], current_lst["artist_popularity"], current_lst["followers"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), ',\n'.join(current_lst["genres"])])
+    print(table.get_string())
+
+    
+    print("The first 3 and last 3 albums in the range are...")
+    table = PrettyTable()
+    table.field_names = ["name", "release_date", "relevant_track_name", "artist_album_name", "total_tracks", "album_type", "external_urls"]
+    for _ in range(1, 4):
+        current_lst = lt.getElement(FirstThreeAlbums, _)
+        table.add_row([current_lst["name"], current_lst["release_date"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), controller.artistID_to_artistName(catalog, current_lst["artist_id"]), current_lst["total_tracks"], current_lst["album_type"], current_lst["external_urls"][13:-2]])
+
+    table.add_row(["...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "..."])
+
+    for _ in range(3 - 2, 3 + 1):
+        current_lst = lt.getElement(LastThreeAlbums, _)
+        table.add_row([current_lst["name"], current_lst["release_date"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), controller.artistID_to_artistName(catalog, current_lst["artist_id"]), current_lst["total_tracks"], current_lst["album_type"], current_lst["external_urls"][13:-2]])
+    print(table.get_string())
+
+
+    print("The first 3 and last 3 tracks in the range are...")
+    table = PrettyTable()
+    table.field_names = ["name", "popularity", "album_name", "disc_number", "track_number", "duration_ms", "artist_names", "href"]
+    for _ in range(1, 4):
+        current_lst = lt.getElement(FirstThreeTracks, _)
+        artists = ""
+        for _ in current_lst["artists_id"]:
+            artists += f"{controller.artistID_to_artistName(catalog, _)}, \n"
+        table.add_row([current_lst["name"], current_lst["popularity"], controller.albumID_to_albumName(catalog, current_lst["album_id"]), current_lst["disc_number"], current_lst["track_number"], current_lst["duration_ms"], artists, current_lst["href"]])
+
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "..."])
+
+    for _ in range(3 - 2, 3 + 1):
+        current_lst = lt.getElement(LastThreeTracks, _)
+        artists = ""
+        for _ in current_lst["artists_id"]:
+            artists += f"{controller.artistID_to_artistName(catalog, _)}, \n"
+        table.add_row([current_lst["name"], current_lst["popularity"], controller.albumID_to_albumName(catalog, current_lst["album_id"]), current_lst["disc_number"], current_lst["track_number"], current_lst["duration_ms"], artists, current_lst["href"]])
     print(table.get_string())
 
 # ================================

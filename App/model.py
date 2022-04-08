@@ -452,6 +452,13 @@ def albumID_to_albumType(catalog, albumID):
     else:
         return request["album_type"]
 
+def albumID_to_albumName(catalog, albumID):
+    request = albumID_to_albumValue(catalog, albumID)
+    if request == None:
+        return "Not found"
+    else:
+        return request["name"]
+
 # ================================================================
 # Funciones utilizadas para comparar elementos dentro de una lista
 # ================================================================

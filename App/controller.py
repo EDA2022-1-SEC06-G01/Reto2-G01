@@ -153,6 +153,9 @@ def albumID_to_albumType(catalog, albumID):
 def trackID_to_trackValue(catalog, trackID):
     return model.trackID_to_trackValue(catalog, trackID)
 
+def albumID_to_albumName(catalog, albumID):
+    return model.albumID_to_albumName(catalog, albumID)
+
 # ========================
 # Funciones requerimientos
 # ========================
