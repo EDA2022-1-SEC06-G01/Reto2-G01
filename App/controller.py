@@ -85,7 +85,7 @@ def CargaAlbums(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    albums = cf.data_dir + 'spotify-albums-utf8-large.csv'
+    albums = cf.data_dir + 'spotify-albums-utf8-small.csv'
     input_file = csv.DictReader(open(albums, encoding='utf-8'))
     FirstThreeAlbums = model.newList("ARRAY_LIST")
     LastThreeAlbums = model.newList("SINGLE_LINKED")
@@ -101,7 +101,7 @@ def CargaArtists(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    artists = cf.data_dir + 'spotify-artists-utf8-large.csv'
+    artists = cf.data_dir + 'spotify-artists-utf8-small.csv'
     input_file = csv.DictReader(open(artists, encoding='utf-8'))
     FirstThreeArtists = model.newList("ARRAY_LIST")
     LastThreeArtists = model.newList("SINGLE_LINKED")
@@ -116,7 +116,7 @@ def CargaTracks(catalog):
     Carga los libros del archivo. Por cada libro se indica al
     modelo que debe adicionarlo al catalogo.
     """
-    tracks = cf.data_dir + 'spotify-tracks-utf8-large.csv'
+    tracks = cf.data_dir + 'spotify-tracks-utf8-small.csv'
     input_file = csv.DictReader(open(tracks, encoding='utf-8'))
     FirstThreeTracks = model.newList("ARRAY_LIST")
     LastThreeTracks = model.newList("SINGLE_LINKED")

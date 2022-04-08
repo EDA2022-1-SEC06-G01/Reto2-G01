@@ -150,15 +150,14 @@ def printRequerimiento4(lst, number_of_tracks, number_of_albums, artista, mercad
     print("========= Req No. 4 Answer =========")
     print(f"'{artista}' available discography in {country_name} ({mercado})")
     print(f"Unique available Albums: {number_of_albums}")
-    print(f"Unique available Albums: {number_of_tracks}")
+    print(f"Unique available Tracks: {number_of_tracks}")
     print()
     print(f"The first and last 3 tracks in the range are...")
     table = PrettyTable()
     table.field_names = ["popularity", "duration_ms", "name", "album_type", "available_markets"]
     for _ in range(1, 4):
         current_lst = lt.getElement(lst, _)
-        available_markets = f"{current_lst['available_markets'][0]}, {current_lst['available_markets'][1]}, {current_lst['available_markets'][2]}, ... , {current_lst['available_markets'][-3]}, {current_lst['available_markets'][-2]}, {current_lst['available_markets'][-1]}"
-        table.add_row([current_lst["popularity"], current_lst["duration_ms"], current_lst["name"], controller.albumID_to_albumType(catalog, current_lst["album_id"]), available_markets])
+        table.add_row([current_lst["popularity"], current_lst["duration_ms"], current_lst["name"], controller.albumID_to_albumType(catalog, current_lst["album_id"]), ", ".join(current_lst['available_markets'])])
 
     table.add_row(["...", "...", "...", "...", "..."])
     table.add_row(["...", "...", "...", "...", "..."])
@@ -166,8 +165,7 @@ def printRequerimiento4(lst, number_of_tracks, number_of_albums, artista, mercad
 
     for _ in range(number_of_tracks - 2, number_of_tracks + 1):
         current_lst = lt.getElement(lst, _)
-        available_markets = f"{current_lst['available_markets'][0]}, {current_lst['available_markets'][1]}, {current_lst['available_markets'][2]}, ... , {current_lst['available_markets'][-3]}, {current_lst['available_markets'][-2]}, {current_lst['available_markets'][-1]}"
-        table.add_row([current_lst["popularity"], current_lst["duration_ms"], current_lst["name"], controller.albumID_to_albumType(catalog, current_lst["album_id"]), available_markets])
+        table.add_row([current_lst["popularity"], current_lst["duration_ms"], current_lst["name"], controller.albumID_to_albumType(catalog, current_lst["album_id"]), ", ".join(current_lst['available_markets'])])
 
     return table.get_string()
 
