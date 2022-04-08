@@ -366,6 +366,7 @@ def requerimiento5(catalogo, artista):
     albumes_por_artistas = catalogo['model']['albumes_por_artistas']
     artistID = ArtistName_to_artistValue(catalogo, artista)['id']
     albums_artista = me.getValue(mp.get(albumes_por_artistas, artistID))
+    albums_artista = shellsort.sort(albums_artista, cmpAlbumsFecha)
     album_sencillo = 0
     album_recopilacion = 0
     album_album = 0
@@ -388,9 +389,21 @@ def requerimiento5(catalogo, artista):
         value = lt.getElement(albums_artista, _)
         lt.addLast(firstAndLastThree_TrackId, value["track_id"])
         lt.addLast(firstAndLastThree_AlbumName, value["name"])
+    
     return albums_artista, numberItems_AlbumsArtista, firstAndLastThree_TrackId, firstAndLastThree_AlbumName, album_sencillo, album_recopilacion, album_album
 
 
+    # =========================
+    # Funciones Requerimiento 6
+    # =========================
+
+
+def requerimiento6(catalog, artista, mercado):
+    canciones = cancionesArtistas_filtradasMercado(catalog, artista, mercado)
+    canciones = shellsort.sort(canciones, cmpCanciones)
+    number_of_tracks = lt.size(canciones)
+    
+    return canciones, number_of_tracks
 
 # =====================
 # Funciones de consulta
@@ -436,14 +449,6 @@ def albumID_to_albumValue(catalog, albumID):
     except:
         return None
 
-"""
-def albumID_to_albumName(catalog, albumID):
-    request = albumID_to_albumValue(catalog, albumID)
-    if request == None:
-        return "Not found"
-    else:
-        return request["name"]
-"""
 
 def albumID_to_albumType(catalog, albumID):
     request = albumID_to_albumValue(catalog, albumID)
@@ -458,6 +463,14 @@ def albumID_to_albumName(catalog, albumID):
         return "Not found"
     else:
         return request["name"]
+
+def albumID_to_albumReleaseDate(catalog, albumID):
+    request = albumID_to_albumValue(catalog, albumID)
+    if request == None:
+        return "Not found"
+    else:
+        return request["release_date"]
+
 
 # ================================================================
 # Funciones utilizadas para comparar elementos dentro de una lista
@@ -497,3 +510,11 @@ def cmpCanciones(track1, track2):
         return track1['duration_ms'] > track2['duration_ms']
     else:
         return track1['name'] > track2['name']
+
+def cmpAlbumsFecha(album1, album2):
+    if album1 == None or album2 == None:
+        return
+    elif album1["release_date"].year > album2["release_date"].year:
+        return album1["release_date"].year > album2["release_date"].year
+    else:
+        return album1['name'] > album2['name']

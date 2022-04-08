@@ -143,6 +143,7 @@ def printRequerimiento3(lst, size, popularity):
 
 def printRequerimiento4(lst, number_of_tracks, number_of_albums, artista, mercado):
     country_name = pycountry.countries.get(alpha_2=mercado)
+    country_name = country_name.name
     print("========= Req No. 4 Inputs =========")
     print(f"'{artista}' Discrography metrics in {country_name} Code: {mercado}")
     print()
@@ -197,6 +198,7 @@ def printRequerimiento5(albums_artista, numberItems_AlbumsArtista, artista, comp
     print(table.get_string())
 
     print()
+    print()
     print("+++ Tracks Details +++")
     for _ in range(1, 7):
         currentTrack = controller.trackID_to_trackValue(catalog, lt.getElement(firstAndLastThree_TrackId, _))
@@ -236,7 +238,7 @@ def printCargaDatos(sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastT
         table.add_row([current_lst["name"], current_lst["artist_popularity"], current_lst["followers"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), ',\n'.join(current_lst["genres"])])
     print(table.get_string())
 
-    
+    print()
     print("The first 3 and last 3 albums in the range are...")
     table = PrettyTable()
     table.field_names = ["name", "release_date", "relevant_track_name", "artist_album_name", "total_tracks", "album_type", "external_urls"]
@@ -253,7 +255,7 @@ def printCargaDatos(sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastT
         table.add_row([current_lst["name"], current_lst["release_date"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), controller.artistID_to_artistName(catalog, current_lst["artist_id"]), current_lst["total_tracks"], current_lst["album_type"], current_lst["external_urls"][13:-2]])
     print(table.get_string())
 
-
+    print()
     print("The first 3 and last 3 tracks in the range are...")
     table = PrettyTable()
     table.field_names = ["name", "popularity", "album_name", "disc_number", "track_number", "duration_ms", "artist_names", "href"]
@@ -276,6 +278,51 @@ def printCargaDatos(sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastT
         table.add_row([current_lst["name"], current_lst["popularity"], controller.albumID_to_albumName(catalog, current_lst["album_id"]), current_lst["disc_number"], current_lst["track_number"], current_lst["duration_ms"], artists, current_lst["href"]])
     print(table.get_string())
 
+
+def printRequerimiento6(lst, lst_size, top, artist, pais):
+    country_name = pycountry.countries.get(alpha_2=pais)
+    country_name = country_name.name
+    print("========= Req No. 6 Inputs =========")
+    print(f"Top {top} tracks of {artist} in {country_name} CODE: {pais}")
+    print()
+    print("========= Req No. 6 Answer =========")
+    print(f"There are {lst_size} tracks released by {artist} in {country_name} CODE: {pais}")
+    print(f"The TOP {top} most popular tracks of this artist in Spotify are:")
+    if top <= lst_size:
+        table = PrettyTable()
+        table.field_names = ["name", "album_name", "album_realease_date", "artists", "number_of_countries", "popularity", "duration_ms", "lyrics"]
+        for _ in range(1, top + 1):
+            current_lst = lt.getElement(lst, _)
+            artists = ""
+            for _ in current_lst["artists_id"]:
+                artists += f"{controller.artistID_to_artistName(catalog, _)}, \n"
+            table.add_row([current_lst["name"], controller.albumID_to_albumName(catalog, current_lst["album_id"]), controller.albumID_to_albumReleaseDate(catalog, current_lst["album_id"]), artists, len(current_lst["available_markets"]), current_lst["popularity"], current_lst["duration_ms"], current_lst["lyrics"][0:10]])
+        print(table.get_string())
+    else:
+        print("No hay canciones suficientes para hacer su top")
+    
+    print()
+    print()
+    print("Primeras y ultimas tres de la lista...")
+
+    table = PrettyTable()
+    table.field_names = ["name", "album_name", "album_realease_date", "artists", "number_of_countries", "popularity", "duration_ms", "lyrics"]
+    for _ in range(1, 4):
+        current_lst = lt.getElement(lst, _)
+        table.add_row([current_lst["name"], controller.albumID_to_albumName(catalog, current_lst["album_id"]), controller.albumID_to_albumReleaseDate(catalog, current_lst["album_id"]), artists, len(current_lst["available_markets"]), current_lst["popularity"], current_lst["duration_ms"], current_lst["lyrics"][0:10]])
+
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "..."])
+
+    for _ in range(lst_size - 2, lst_size + 1):
+        current_lst = lt.getElement(lst, _)
+        
+        table.add_row([current_lst["name"], controller.albumID_to_albumName(catalog, current_lst["album_id"]), controller.albumID_to_albumReleaseDate(catalog, current_lst["album_id"]), artists, len(current_lst["available_markets"]), current_lst["popularity"], current_lst["duration_ms"], current_lst["lyrics"][0:10]])
+    return table.get_string()
+
+
+
 # ================================
 # Funcion para inicializar el menu
 # ================================
@@ -288,7 +335,7 @@ def printMenu():
     print("4- Encontrar las canciones por popularidad | Requerimiento 3 (Individual)")
     print("5- Encontrar la cancion mas popular de un artista | Requerimiento 4")
     print("6- Encontrar la discografia de un artista | Requerimiento 5")
-    print("7- Clasificar las canciones de artistas con mayor distribucion")
+    print("7- Clasificar las canciones de artistas con mayor distribucion | Requerimiento 6 (Bono)")
 
 
 catalog = None
@@ -305,12 +352,9 @@ while True:
         catalog = newCatalog()
         delta_time, delta_memory, sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastThreeAlbums, FirstThreeArtists, LastThreeArtists, FirstThreeTracks, LastThreeTracks = controller.loadData(catalog)
         printCargaDatos(sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastThreeAlbums, FirstThreeArtists, LastThreeArtists, FirstThreeTracks, LastThreeTracks)
-        delta_time, delta_memory = controller.loadData(catalog)
         print("El tiempo que se demoró la carga fue de: ",{delta_time})
         print("La cantidad de memoria usada fue de: ", {delta_memory})
-        #print(mp.size(catalog['model']['albums_id']))
-        #print(mp.size(catalog['model']['artists_id']))
-        #print(mp.size(catalog['model']['tracks_id']))
+
         
     elif int(inputs[0]) == 2:
         year = int(input("Introduzca el anio que desea consultar: "))
@@ -324,9 +368,7 @@ while True:
         tracemalloc.stop()
 
         albumsLST, cantidad_albumes = controller.requerimiento1(catalog, year)
-        #print(lt.firstElement(albumsLST))
-        #print(lt.lastElement(albumsLST))
-        #print(cantidad_albumes)
+
         print(printRequerimiento1(albumsLST, cantidad_albumes, year))
         print("El tiempo que se demoró fue de: ",{delta_time})
         print("La memoria que se usó fue de:", {delta_memory})
@@ -344,9 +386,6 @@ while True:
         stop_memory = controller.getMemory()
         tracemalloc.stop()
 
-        #print(lt.firstElement(artistLST))
-        #print(lt.lastElement(artistLST))
-        #print(numero_canciones)
         delta_time = controller.deltaTime(stop_time, start_time)
         delta_memory = controller.deltaMemory(stop_memory, start_memory)
 
@@ -370,12 +409,10 @@ while True:
         delta_time = controller.deltaTime(stop_time, start_time)
         delta_memory = controller.deltaMemory(stop_memory, start_memory)
 
-        #print(lt.firstElement(tracks))
         print(printRequerimiento3(tracks, lstsize, popularity))
         print("El tiempo que se demoró fue de: ",{delta_time})
         print("La memoria que se usó fue de:", {delta_memory})
-        #print(lt.lastElement(tracks))
-        #print(lstsize)
+
         
     elif int(inputs[0]) == 5:
         artista = input("Introduzca el artista que desea consultar: ")
@@ -421,16 +458,14 @@ while True:
         print("El tiempo que se demoró fue de: ",{delta_time})
         print("La memoria que se usó fue de:", {delta_memory})
 
+
     elif int(inputs[0]) == 7:
-        pass
-        #print(f"Cantidad albums_id: {mp.size(catalog['model']['albums_id'])}")
-        #print(f"Cantidad artists_id: {mp.size(catalog['model']['artists_id'])}")
-        #print(f"Cantidad artistsName_id: {mp.size(catalog['model']['artistsName_id'])}")
-        #print(f"Cantidad tracks_id: {mp.size(catalog['model']['tracks_id'])}")
-        #print(f"Cantidad anio_albumID: {mp.size(catalog['model']['anio_albumID'])}")
-        #print(f"Cantidad artistPopularity_artistID: {mp.size(catalog['model']['artistPopularity_artistID'])}")
-        #print(f"Cantidad canciones_por_artistas: {mp.size(catalog['model']['canciones_por_artistas'])}")
-        #print(f"Cantidad albumes_por_artistas: {mp.size(catalog['model']['albumes_por_artistas'])}")
+        artista = input("Introduzca el artista que desea consultar: ")
+        mercado = input("Introduzca el mercado que desea consultar: ")
+        top = int(input("Introduzca la cantidad de canciones que desea que esten en su top: "))
+        canciones, number_of_tracks = controller.requerimiento6(catalog, artista, mercado)
+        printRequerimiento6(canciones, number_of_tracks, top, artista, mercado)
+
 
     else:
         sys.exit(0)
