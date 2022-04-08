@@ -118,9 +118,16 @@ def printRequerimiento3(lst, size, popularity):
     for i in range(1, 4):
         current_lst = lt.getElement(lst, i)
         table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
+   
     table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
     table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
     table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+   
+    for _ in range(size - 2, size + 1):
+        current_lst = lt.getElement(lst, _)
+        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
+   
+        
     return table.get_string()
 # ================================
 # Funcion para inicializar el menu
