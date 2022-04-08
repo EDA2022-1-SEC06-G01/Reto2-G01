@@ -313,8 +313,16 @@ def cancionesArtistas_filtradasMercado(catalog, artista, mercado):
 
 def requerimiento4(catalog, artista, mercado):
     canciones = cancionesArtistas_filtradasMercado(catalog, artista, mercado)
-    canciones = shellsort.sort(canciones, cmpRequerimiento4)
-    return canciones
+    canciones = shellsort.sort(canciones, cmpCanciones)
+    number_of_tracks = lt.size(canciones)
+    albumes = []
+    for _ in lt.iterator(canciones):
+        id = _["album_id"]
+        if id not in albumes:
+            albumes.append(id)
+    number_of_albums = len(albumes)
+    
+    return canciones, number_of_tracks, number_of_albums
     
 
     # =========================
@@ -333,14 +341,6 @@ def albumes_por_artistas(catalogo, album):
         mp.put(albumes_por_artistas, artista, lst)
     lt.addLast(lst, album)
 
-def listaAlbums_cancionesPopulares(catalogo, lista_albumes):
-    lst = lt.newList(datastructure='ARRAY_LIST')
-    for album in lt.iterator(lista_albumes):
-        track = album["track_id"]
-        lt.addLast(lst, trackID_to_trackValue(catalogo, track))
-    lst = shellsort.sort(lst, cmpCanciones)
-    return lst
-
 def requerimiento5(catalogo, artista):
     albumes_por_artistas = catalogo['model']['albumes_por_artistas']
     artistID = ArtistName_to_artistValue(catalogo, artista)['id']
@@ -355,8 +355,19 @@ def requerimiento5(catalogo, artista):
             album_recopilacion += 1
         else:
             album_album += 1
-    listaCancionesPopulares = listaAlbums_cancionesPopulares(catalogo, albums_artista)
-    return albums_artista, listaCancionesPopulares, album_sencillo, album_recopilacion, album_album
+    numberItems_AlbumsArtista = lt.size(albums_artista)
+    firstAndLastThree_TrackId = lt.newList(datastructure="ARRAY_LIST")
+    firstAndLastThree_AlbumName = lt.newList(datastructure="ARRAY_LIST")
+    for _ in range(1, 4):
+        value = lt.getElement(albums_artista, _)
+        lt.addLast(firstAndLastThree_TrackId, value["track_id"])
+        lt.addLast(firstAndLastThree_AlbumName, value["name"])
+
+    for _ in range(numberItems_AlbumsArtista - 2, numberItems_AlbumsArtista + 1):
+        value = lt.getElement(albums_artista, _)
+        lt.addLast(firstAndLastThree_TrackId, value["track_id"])
+        lt.addLast(firstAndLastThree_AlbumName, value["name"])
+    return albums_artista, numberItems_AlbumsArtista, firstAndLastThree_TrackId, firstAndLastThree_AlbumName, album_sencillo, album_recopilacion, album_album
 
 
 
@@ -372,7 +383,10 @@ def requerimiento5(catalogo, artista):
 # =====================
 
 def artistID_to_artistValue(catalog, artistID):
-    return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
+    try:
+        return me.getValue(mp.get(catalog['model']['artists_id'], artistID))
+    except:
+        return None
 
 
 def ArtistName_to_artistValue(catalog, artistName):
@@ -382,7 +396,11 @@ def ArtistName_to_artistValue(catalog, artistName):
 
 
 def artistID_to_artistName(catalog, artist_id):
-    return artistID_to_artistValue(catalog, artist_id)["name"]
+    request = artistID_to_artistValue(catalog, artist_id)
+    if request == None:
+        return "Not found"
+    else:
+        return request["name"]
 
 def trackID_to_trackValue(catalog, trackID):
     try:
@@ -395,10 +413,30 @@ def trackID_to_trackName(catalog, track_id):
     if request == None:
         return "Not found"
     else:
-        return trackID_to_trackValue(catalog, track_id)["name"]
+        return request["name"]
 
 
+def albumID_to_albumValue(catalog, albumID):
+    try:
+        return me.getValue(mp.get(catalog['model']['albums_id'], albumID))
+    except:
+        return None
 
+"""
+def albumID_to_albumName(catalog, albumID):
+    request = albumID_to_albumValue(catalog, albumID)
+    if request == None:
+        return "Not found"
+    else:
+        return request["name"]
+"""
+
+def albumID_to_albumType(catalog, albumID):
+    request = albumID_to_albumValue(catalog, albumID)
+    if request == None:
+        return "Not found"
+    else:
+        return request["album_type"]
 
 # ================================================================
 # Funciones utilizadas para comparar elementos dentro de una lista

@@ -29,6 +29,8 @@ import sys
 default_limit = 1000
 sys.setrecursionlimit(default_limit*10)
 from prettytable import PrettyTable
+import pycountry
+import pandas
 
 
 
@@ -93,7 +95,7 @@ def printRequerimiento2(lst, cantidad_artistas, popularity):
     table.field_names = ["artist_popularity", "followers", "name", "relevant_track_name", "genres"]
     for _ in range(1, 4):
         current_lst = lt.getElement(lst, _)
-        table.add_row([current_lst["artist_popularity"], current_lst["followers"], current_lst["name"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), current_lst["genres"]])
+        table.add_row([current_lst["artist_popularity"], current_lst["followers"], current_lst["name"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), ',\n'.join(current_lst["genres"])])
 
     table.add_row(["...", "...", "...", "...", "..."])
     table.add_row(["...", "...", "...", "...", "..."])
@@ -101,9 +103,82 @@ def printRequerimiento2(lst, cantidad_artistas, popularity):
 
     for _ in range(cantidad_artistas - 2, cantidad_artistas + 1):
         current_lst = lt.getElement(lst, _)
-        table.add_row([current_lst["artist_popularity"], current_lst["followers"], current_lst["name"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), current_lst["genres"]])
         
+        table.add_row([current_lst["artist_popularity"], current_lst["followers"], current_lst["name"], controller.trackID_to_trackName(catalog, current_lst["track_id"]), ',\n'.join(current_lst["genres"])])
     return table.get_string()
+
+
+def printRequerimiento4(lst, number_of_tracks, number_of_albums, artista, mercado):
+    country_name = pycountry.countries.get(alpha_2=mercado)
+    print("========= Req No. 4 Inputs =========")
+    print(f"'{artista}' Discrography metrics in {country_name} Code: {mercado}")
+    print()
+    print("========= Req No. 4 Answer =========")
+    print(f"'{artista}' available discography in {country_name} ({mercado})")
+    print(f"Unique available Albums: {number_of_albums}")
+    print(f"Unique available Albums: {number_of_tracks}")
+    print()
+    print(f"The first and last 3 tracks in the range are...")
+    table = PrettyTable()
+    table.field_names = ["popularity", "duration_ms", "name", "album_type", "available_markets"]
+    for _ in range(1, 4):
+        current_lst = lt.getElement(lst, _)
+        available_markets = f"{current_lst['available_markets'][0]}, {current_lst['available_markets'][1]}, {current_lst['available_markets'][2]}, ... , {current_lst['available_markets'][-3]}, {current_lst['available_markets'][-2]}, {current_lst['available_markets'][-1]}"
+        table.add_row([current_lst["popularity"], current_lst["duration_ms"], current_lst["name"], controller.albumID_to_albumType(catalog, current_lst["album_id"]), available_markets])
+
+    table.add_row(["...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "..."])
+
+    for _ in range(number_of_tracks - 2, number_of_tracks + 1):
+        current_lst = lt.getElement(lst, _)
+        available_markets = f"{current_lst['available_markets'][0]}, {current_lst['available_markets'][1]}, {current_lst['available_markets'][2]}, ... , {current_lst['available_markets'][-3]}, {current_lst['available_markets'][-2]}, {current_lst['available_markets'][-1]}"
+        table.add_row([current_lst["popularity"], current_lst["duration_ms"], current_lst["name"], controller.albumID_to_albumType(catalog, current_lst["album_id"]), available_markets])
+
+    return table.get_string()
+
+def printRequerimiento5(albums_artista, numberItems_AlbumsArtista, artista, compilations, singles, discography, firstAndLastThree_TrackId, firstAndLastThree_AlbumName):
+    print("========= Req No. 5 Inputs =========")
+    print(f"Discography metrics from {artista}")
+    print()
+    print("========= Req No. 5 Answer =========")
+    print(f"Number of 'compilations': {compilations}")
+    print(f"Number of 'singles': {singles}")
+    print(f"Number of 'Discography': {discography}")
+    print()
+    print("+++ Albums Details +++")
+    print("The first and last 3 tracks in the range are...")
+    table = PrettyTable()
+    table.field_names = ["release_date", "album_name", "total_tracks", "album_type", "artist_album_name", "external_urls"]
+    for _ in range(1, 4):
+        current_lst = lt.getElement(albums_artista, _)
+        table.add_row([current_lst["release_date"], current_lst["name"], current_lst["total_tracks"], current_lst["album_type"], controller.artistID_to_artistName(catalog, current_lst["artist_id"]), current_lst["external_urls"]])
+
+    table.add_row(["...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "..."])
+
+    for _ in range(numberItems_AlbumsArtista - 2, numberItems_AlbumsArtista + 1):
+        current_lst = lt.getElement(albums_artista, _)
+        table.add_row([current_lst["release_date"], current_lst["name"], current_lst["total_tracks"], current_lst["album_type"], controller.artistID_to_artistName(catalog, current_lst["artist_id"]), current_lst["external_urls"]])
+    print(table.get_string())
+
+    print()
+    print("+++ Tracks Details +++")
+    for _ in range(1, 7):
+        currentTrack = controller.trackID_to_trackValue(catalog, lt.getElement(firstAndLastThree_TrackId, _))
+        print(f"Most popular track in '{lt.getElement(firstAndLastThree_AlbumName, _)}'")
+        table = PrettyTable()
+        table.field_names = ["popularity", "duration_ms", "name_track", "track_number", "artists_names", "preview_url", "href"]
+        if currentTrack == None: 
+            table.add_row(["Not found", "Not found", "Not found", "Not found", "Not found", "Not found", "Not found"])
+        else:
+            artists = ""
+            for _ in currentTrack["artists_id"]:
+                artists += f"{controller.artistID_to_artistName(catalog, _)}, \n"
+            table.add_row([currentTrack["popularity"], currentTrack["duration_ms"], currentTrack["name"], currentTrack["track_number"], artists, currentTrack["preview_url"], currentTrack["href"]])
+        print(table.get_string())
+    
 
 
 # ================================
@@ -154,7 +229,6 @@ while True:
         #print(lt.lastElement(artistLST))
         #print(numero_canciones)
         print(printRequerimiento2(artistLST, numero_canciones, popularity))
-        print(lt.lastElement(artistLST))
 
     elif int(inputs[0]) == 4:
         popularity = int(input("Ingrese la popularidad que desea consultar (0-100):"))
@@ -166,16 +240,18 @@ while True:
     elif int(inputs[0]) == 5:
         artista = input("Introduzca el artista que desea consultar: ")
         mercado = input("Introduzca el mercado que desea consultar: ")
-        canciones = controller.requerimiento4(catalog, artista, mercado)
+        lst_canciones, number_of_tracks, number_of_albums = controller.requerimiento4(catalog, artista, mercado)
         #print(lt.firstElement(canciones))
+        print(printRequerimiento4(lst_canciones, number_of_tracks, number_of_albums, artista, mercado))
 
     elif int(inputs[0]) == 6:
         artista = input("Introduzca el artista que desea consultar: ")
-        albums_artista, listaCancionesPopulares, album_sencillo, album_recopilacion, album_album = controller.requerimiento5(catalog, artista)
+        albums_artista, numberItems_AlbumsArtista, firstAndLastThree_TrackId, firstAndLastThree_AlbumName, album_sencillo, album_recopilacion, album_album = controller.requerimiento5(catalog, artista)
         #print(album_recopilacion)
         #print(album_sencillo)
         #print(album_album)
         # Falta debug sorting
+        print(printRequerimiento5(albums_artista, numberItems_AlbumsArtista, artista, album_recopilacion, album_sencillo, album_album, firstAndLastThree_TrackId, firstAndLastThree_AlbumName))
 
     elif int(inputs[0]) == 7:
         pass
