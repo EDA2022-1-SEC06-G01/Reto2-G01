@@ -181,6 +181,30 @@ def printRequerimiento5(albums_artista, numberItems_AlbumsArtista, artista, comp
     
 
 
+def printRequerimiento3(lst, size, popularity):
+    print("========= Req No. 3 Inputs =========")
+    print(f"The trakcs with popularity rating of: {popularity}")
+    print()
+    print("========= Req No. 3 Answer =========")
+    print(f"There are {size} tracks with {popularity}")
+    print()
+    print(f"The first 3 and last 3 tracks with {popularity} are...")
+    table = PrettyTable()
+    table.field_names= ['popularity','duration_ms','name_track', 'disc_number', 'track_number', 'album_name', 'artists_names', 'href', 'lyrics']
+    for i in range(1, 4):
+        current_lst = lt.getElement(lst, i)
+        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
+   
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+    table.add_row(["...", "...", "...", "...", "...", "...", "...", "...", "..."])
+   
+    for _ in range(size - 2, size + 1):
+        current_lst = lt.getElement(lst, _)
+        table.add_row([current_lst['value']['popularity'], current_lst['value']['duration_ms'], current_lst['value']['name'], current_lst['value']['disc_number'],current_lst['value']['track_number'],current_lst['value']['album_id'],current_lst['value']['artists_id'],current_lst['value']['href'],current_lst['value']['lyrics'][0:10]])
+   
+        
+    return table.get_string()
 # ================================
 # Funcion para inicializar el menu
 # ================================
@@ -234,6 +258,7 @@ while True:
         popularity = int(input("Ingrese la popularidad que desea consultar (0-100):"))
         tracks, lstsize = controller.requerimiento3(catalog, popularity)
         #print(lt.firstElement(tracks))
+        print(printRequerimiento3(tracks, lstsize, popularity))
         #print(lt.lastElement(tracks))
         #print(lstsize)
         
