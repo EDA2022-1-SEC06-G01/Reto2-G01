@@ -27,6 +27,7 @@ import controller
 from DISClib.ADT import list as lt
 assert cf
 import sys
+import tracemalloc
 default_limit = 1000
 sys.setrecursionlimit(default_limit*10)
 from prettytable import PrettyTable
@@ -304,50 +305,121 @@ while True:
         catalog = newCatalog()
         delta_time, delta_memory, sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastThreeAlbums, FirstThreeArtists, LastThreeArtists, FirstThreeTracks, LastThreeTracks = controller.loadData(catalog)
         printCargaDatos(sizeAlbums, sizeArtists, sizeTracks, FirstThreeAlbums, LastThreeAlbums, FirstThreeArtists, LastThreeArtists, FirstThreeTracks, LastThreeTracks)
+        delta_time, delta_memory = controller.loadData(catalog)
+        print("El tiempo que se demoró la carga fue de: ",{delta_time})
+        print("La cantidad de memoria usada fue de: ", {delta_memory})
         #print(mp.size(catalog['model']['albums_id']))
         #print(mp.size(catalog['model']['artists_id']))
         #print(mp.size(catalog['model']['tracks_id']))
         
     elif int(inputs[0]) == 2:
         year = int(input("Introduzca el anio que desea consultar: "))
+        
+        tracemalloc.start()
+        start_memory = controller.getMemory()
+        start_time = controller.getTime()
+
+        stop_time = controller.getTime()
+        stop_memory = controller.getMemory()
+        tracemalloc.stop()
+
         albumsLST, cantidad_albumes = controller.requerimiento1(catalog, year)
         #print(lt.firstElement(albumsLST))
         #print(lt.lastElement(albumsLST))
         #print(cantidad_albumes)
         print(printRequerimiento1(albumsLST, cantidad_albumes, year))
-        print("cargo")
+        print("El tiempo que se demoró fue de: ",{delta_time})
+        print("La memoria que se usó fue de:", {delta_memory})
 
     elif int(inputs[0]) == 3:
         popularity = int(input("Introduzca la popularidad que desea consultar: "))
+
+        tracemalloc.start()
+        start_memory = controller.getMemory()
+        start_time = controller.getTime()
+
         artistLST, numero_canciones = controller.requerimiento2(catalog, popularity)
+
+        stop_time = controller.getTime()
+        stop_memory = controller.getMemory()
+        tracemalloc.stop()
+
         #print(lt.firstElement(artistLST))
         #print(lt.lastElement(artistLST))
         #print(numero_canciones)
+        delta_time = controller.deltaTime(stop_time, start_time)
+        delta_memory = controller.deltaMemory(stop_memory, start_memory)
+
         print(printRequerimiento2(artistLST, numero_canciones, popularity))
+        print("El tiempo que se demoró fue de: ",{delta_time})
+        print("La memoria que se usó fue de:", {delta_memory})
 
     elif int(inputs[0]) == 4:
         popularity = int(input("Ingrese la popularidad que desea consultar (0-100):"))
+
+        tracemalloc.start()
+        start_memory = controller.getMemory()
+        start_time = controller.getTime()
+
         tracks, lstsize = controller.requerimiento3(catalog, popularity)
+
+        stop_time = controller.getTime()
+        stop_memory = controller.getMemory()
+        tracemalloc.stop()
+
+        delta_time = controller.deltaTime(stop_time, start_time)
+        delta_memory = controller.deltaMemory(stop_memory, start_memory)
+
         #print(lt.firstElement(tracks))
         print(printRequerimiento3(tracks, lstsize, popularity))
+        print("El tiempo que se demoró fue de: ",{delta_time})
+        print("La memoria que se usó fue de:", {delta_memory})
         #print(lt.lastElement(tracks))
         #print(lstsize)
         
     elif int(inputs[0]) == 5:
         artista = input("Introduzca el artista que desea consultar: ")
         mercado = input("Introduzca el mercado que desea consultar: ")
+
+        tracemalloc.start()
+        start_memory = controller.getMemory()
+        start_time = controller.getTime()
+
         lst_canciones, number_of_tracks, number_of_albums = controller.requerimiento4(catalog, artista, mercado)
+        
+        stop_time = controller.getTime()
+        stop_memory = controller.getMemory()
+        tracemalloc.stop()
+
+        delta_time = controller.deltaTime(stop_time, start_time)
+        delta_memory = controller.deltaMemory(stop_memory, start_memory)
         #print(lt.firstElement(canciones))
         print(printRequerimiento4(lst_canciones, number_of_tracks, number_of_albums, artista, mercado))
+        print("El tiempo que se demoró fue de: ",{delta_time})
+        print("La memoria que se usó fue de:", {delta_memory})
 
     elif int(inputs[0]) == 6:
         artista = input("Introduzca el artista que desea consultar: ")
+
+        tracemalloc.start()
+        start_memory = controller.getMemory()
+        start_time = controller.getTime()
+
         albums_artista, numberItems_AlbumsArtista, firstAndLastThree_TrackId, firstAndLastThree_AlbumName, album_sencillo, album_recopilacion, album_album = controller.requerimiento5(catalog, artista)
+        
+        stop_time = controller.getTime()
+        stop_memory = controller.getMemory()
+        tracemalloc.stop()
+
+        delta_time = controller.deltaTime(stop_time, start_time)
+        delta_memory = controller.deltaMemory(stop_memory, start_memory)
         #print(album_recopilacion)
         #print(album_sencillo)
         #print(album_album)
         # Falta debug sorting
         print(printRequerimiento5(albums_artista, numberItems_AlbumsArtista, artista, album_recopilacion, album_sencillo, album_album, firstAndLastThree_TrackId, firstAndLastThree_AlbumName))
+        print("El tiempo que se demoró fue de: ",{delta_time})
+        print("La memoria que se usó fue de:", {delta_memory})
 
     elif int(inputs[0]) == 7:
         pass
